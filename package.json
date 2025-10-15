@@ -10,7 +10,8 @@
     "prepare": "husky",
     "format": "npx prettier . --write",
     "setup": "prisma generate && prisma migrate deploy && prisma db seed",
-    "migrate": "npx prisma migrate deploy"
+    "migrate": "npx prisma migrate deploy",
+    "lint": "npx eslint"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"

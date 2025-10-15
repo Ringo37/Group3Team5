@@ -14,9 +14,8 @@ import {
   createUserSession,
   getUserId,
 } from "~/services/auth.server";
-import { validateEmail } from "~/utils/validateEmail";
-
 import { safeRedirect } from "~/utils/safeRedirect";
+import { validateEmail } from "~/utils/validateEmail";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await getUserId(request);

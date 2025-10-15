@@ -6,8 +6,6 @@
 
 - DockerとNodeJsをインストールしていない場合はインストールしてください。
 
-Install the dependencies:
-
 ※最初とエラーでうごかないときに以下を実行。
 
 ```bash
@@ -16,32 +14,46 @@ npm install
 
 ### Development
 
-※環境変数のコピー
+環境変数のコピー
 
 ```bash
 cp .env.example .env
 ```
 
+データベースを起動
+
 ```bash
 sudo docker compose up -d
 ```
 
-※最初とデータシートを削除したときのみ
+※最初とデータシートを削除したときのみ実行
 
 ```bash
 npm run setup
 ```
 
-※データベースに変更があった場合のみ
+※データベースに変更があった場合のみ実行
 
 ```bash
 npm run migrate
 ```
 
-Start the development server with HMR:
+開発サーバーを起動
 
 ```bash
 npm run dev
+```
+
+eslintの実行
+
+```bash
+npm run lint
+```
+
+フォーマットの実行
+
+```bash
+npm run format
 ```
 
 Your application will be available at `http://localhost:5173`.
