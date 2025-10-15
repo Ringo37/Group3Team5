@@ -16,11 +16,17 @@ npm install
 
 ### Development
 
+※環境変数のコピー
+
+```bash
+cp .env.example .env
+```
+
 ```bash
 sudo docker compose up -d
 ```
 
-※マイグレートしていない場合のみ
+※最初とデータシートを削除したときのみ
 
 ```bash
 npm run setup
