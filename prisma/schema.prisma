@@ -6,10 +6,143 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  FARMER
+  USER
+}
+
+enum Action {
+  READ
+  WRITE
+  DELETE
+  CREATE
+  UPDATE
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  tel       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role      Role     @default(USER)
+
+  password                Password?
+  organizations           Organization[]
+  accessLogs              AccessLog[]
+  knowhows                Knowhow[]
+  ndaAgreementsAsProvider NdaAgreement[] @relation("Provider")
+  ndaAgreementsAsLearner  NdaAgreement[] @relation("Learner")
+  Farm                    Farm[]
+  WorkLog                 WorkLog[]
+  InterestTag             InterestTag[]
+}
+
+model Password {
+  hash   String
+  userId String @unique
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model InterestTag {
+  id   String @id @default(cuid())
+  tag  String @unique
+  user User[]
+}
+
+model Organization {
+  id     String  @id @default(cuid())
+  name   String
+  detail String?
+
+  users User[]
+}
+
+model Farm {
+  id               Int    @id @default(autoincrement())
+  region           String
+  areaHa           Float
+  farmType         String
+  mainCrops        String
+  seasonalCalendar String
+
+  user     User[]
+  knowhows Knowhow[]
+  WorkLog  WorkLog[]
+}
+
+model Knowhow {
+  id          Int      @id @default(autoincrement())
+  title       String
+  summary     String?
+  fullText    String?  @map("full_text")
+  sensitivity String?
+  tags        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  farmId      Int
+  userId      String
+
+  farm       Farm        @relation(fields: [farmId], references: [id])
+  user       User        @relation(fields: [userId], references: [id])
+  accessLogs AccessLog[]
+}
+
+model AccessLog {
+  id        Int      @id @default(autoincrement())
+  action    Action
+  timestamp DateTime @default(now())
+  knowhowId Int
+  userId    String
+
+  knowhow Knowhow @relation(fields: [knowhowId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+}
+
+model NdaAgreement {
+  id         Int      @id @default(autoincrement())
+  providerId String
+  learnerId  String
+  ndaHash    String
+  expiry     DateTime
+
+  provider User @relation("Provider", fields: [providerId], references: [id])
+  learner  User @relation("Learner", fields: [learnerId], references: [id])
+}
+
+enum WeatherCondition {
+  SUNNY
+  CLOUDY
+  RAINY
+  SNOWY
+  WINDY
+  FOGGY
+}
+
+model WorkLog {
+  id            Int               @id @default(autoincrement())
+  date          DateTime
+  workDetails   String
+  weather       WeatherCondition?
+  temperature   Float?
+  humidity      Float?
+  windSpeed     Float?
+  precipitation Float?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  farmId Int
+  farm   Farm   @relation(fields: [farmId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 }
