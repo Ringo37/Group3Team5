@@ -8,16 +8,33 @@
 
 Install the dependencies:
 
+※最初とエラーでうごかないときに以下を実行。
+
 ```bash
 npm install
 ```
 
 ### Development
 
+```bash
+sudo docker compose up -d
+```
+
+※マイグレートしていない場合のみ
+
+```bash
+npm run setup
+```
+
+※データベースに変更があった場合のみ
+
+```bash
+npm run migrate
+```
+
 Start the development server with HMR:
 
 ```bash
-sudo docker compose up -d
 npm run dev
 ```
 
