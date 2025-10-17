@@ -23,7 +23,7 @@ cp .env.example .env
 データベースを起動 ※毎回
 
 ```bash
-sudo docker compose up -d
+docker compose up -d
 ```
 
 セットアップ ※最初のみ実行
