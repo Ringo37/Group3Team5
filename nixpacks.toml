@@ -1,14 +1,7 @@
 [phases.setup]
-nixPkgs = ["nodejs_22", "python311", "pip", "bash"]
-
-[phases.setup.commands]
-install_node = "npm ci"
-
-[phases.python]
-commands = [
-  "cd model_api && python3 -m venv venv",
-  "cd model_api && ./venv/bin/pip install -r requirements.txt"
-]
+nixpkgsArchive = '51ad838b03a05b1de6f9f2a0fffecee64a9788ee'
+nixPkgs = ["nodejs_22", "python311"]
+cmds = ["npm ci --omit=dev","npm run setup:python"]
 
 [phases.build]
 cmds = [
