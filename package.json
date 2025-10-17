@@ -17,7 +17,10 @@
     "setup:python": "cd model_api && (python3 -m venv venv || py -m venv venv) && (./venv/bin/pip install -r requirements.txt || venv\\Scripts\\pip install -r requirements.txt)",
     "setup": "npm-run-all --parallel setup:*",
     "migrate": "npx prisma migrate deploy",
-    "lint": "npx eslint"
+    "lint": "npx eslint",
+    "openapi-ts": "openapi-ts",
+    "openapi-py": "cd model_api && (./venv/bin/python openapi.py || venv\\Scripts\\python openapi.py)",
+    "openapi": "npm run openapi-py && npm run openapi-ts"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
@@ -44,6 +47,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",
+    "@hey-api/openapi-ts": "0.85.2",
     "@react-router/dev": "^7.9.2",
     "@tailwindcss/vite": "^4.1.13",
     "@types/node": "^22.18.8",
