@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["nodejs_22_12", "python311"]
+nixPkgs = ["nodejs_23", "python311"]
 cmds = ["npm ci","npm run setup:python"]
 
 [phases.build]
