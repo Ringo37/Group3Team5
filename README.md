@@ -49,6 +49,12 @@ npm run dev
 - ReactRouterは `http://localhost:5173`
 - FastAPIは `http://localhost:8000`
 
+FastAPIの型定義
+
+```bash
+npm run openapi
+```
+
 eslintの実行(コードに問題がないか確認)
 
 ```bash
@@ -95,6 +101,7 @@ Group3Team5/
 │ ├── services/ # ログイン関連  
 │ ├── utils/ # ユーティリティ  
 │ ├── lib/ # ライブラリ  
+│ ├── api/ # FastAPIの型定義  
 │ ├── routes.ts # ルートの定義  
 │ ├── app.css # CSSファイル  
 │ └── root.tsx  

@@ -15,6 +15,7 @@ export default [
       ".react-router/**",
       ".env",
       "coverage/**",
+      "app/api/**",
     ],
   },
   {
