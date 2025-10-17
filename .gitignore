@@ -1,9 +1,17 @@
 .DS_Store
 .env
-/node_modules/
 
 # React Router
+/node_modules/
 /.react-router/
 /build/
 
+# Prisma
 /generated/prisma
+
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
