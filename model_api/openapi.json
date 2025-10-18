@@ -47,6 +47,34 @@
           }
         }
       }
+    },
+    "/extract_keywords": {
+      "post": {
+        "summary": "Extract Keywords Api",
+        "operationId": "extract_keywords_api_extract_keywords_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TextRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -61,6 +89,15 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "TextRequest": {
+        "properties": {
+          "text": { "type": "string", "title": "Text" },
+          "top_n": { "type": "integer", "title": "Top N", "default": 5 }
+        },
+        "type": "object",
+        "required": ["text"],
+        "title": "TextRequest"
       },
       "ValidationError": {
         "properties": {

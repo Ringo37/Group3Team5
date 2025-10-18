@@ -3,6 +3,9 @@
 import type { Client, Options as Options2, TDataShape } from "./client";
 import { client } from "./client.gen";
 import type {
+  ExtractKeywordsApiExtractKeywordsPostData,
+  ExtractKeywordsApiExtractKeywordsPostErrors,
+  ExtractKeywordsApiExtractKeywordsPostResponses,
   ReadItemItemsItemIdGetData,
   ReadItemItemsItemIdGetErrors,
   ReadItemItemsItemIdGetResponses,
@@ -56,5 +59,27 @@ export const readItemItemsItemIdGet = <ThrowOnError extends boolean = false>(
   >({
     url: "/items/{item_id}",
     ...options,
+  });
+};
+
+/**
+ * Extract Keywords Api
+ */
+export const extractKeywordsApiExtractKeywordsPost = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ExtractKeywordsApiExtractKeywordsPostData, ThrowOnError>,
+) => {
+  return (options.client ?? client).post<
+    ExtractKeywordsApiExtractKeywordsPostResponses,
+    ExtractKeywordsApiExtractKeywordsPostErrors,
+    ThrowOnError
+  >({
+    url: "/extract_keywords",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
   });
 };

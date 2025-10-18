@@ -91,7 +91,10 @@ Group3Team5/
 │ └── seed.ts #データベースのシード  
 │  
 ├── model_api/ # Python (FastAPI)  
-│ ├── main.py # エントリーポイント  
+│ ├── app # FastAPI  
+│ │ ├── modules/ # 関数群  
+│ │ ├── main.py # エントリーポイント  
+│ │ └── schemas.py # APIのデータ型定義  
 │ └── requirements.txt # Python依存関係  
 │  
 ├── app/ # React Router  
