@@ -5,6 +5,34 @@ export type ClientOptions = {
 };
 
 /**
+ * ExtractKeywordsError
+ */
+export type ExtractKeywordsError = {
+  /**
+   * Status
+   */
+  status: string;
+  /**
+   * Message
+   */
+  message: string;
+};
+
+/**
+ * ExtractKeywordsSuccess
+ */
+export type ExtractKeywordsSuccess = {
+  /**
+   * Status
+   */
+  status: string;
+  /**
+   * Keywords
+   */
+  keywords: Array<Keyword>;
+};
+
+/**
  * HTTPValidationError
  */
 export type HttpValidationError = {
@@ -12,6 +40,20 @@ export type HttpValidationError = {
    * Detail
    */
   detail?: Array<ValidationError>;
+};
+
+/**
+ * Keyword
+ */
+export type Keyword = {
+  /**
+   * Word
+   */
+  word: string;
+  /**
+   * Count
+   */
+  count: number;
 };
 
 /**
@@ -113,7 +155,12 @@ export type ExtractKeywordsApiExtractKeywordsPostError =
 
 export type ExtractKeywordsApiExtractKeywordsPostResponses = {
   /**
+   * Response Extract Keywords Api Extract Keywords Post
+   *
    * Successful Response
    */
-  200: unknown;
+  200: ExtractKeywordsSuccess | ExtractKeywordsError;
 };
+
+export type ExtractKeywordsApiExtractKeywordsPostResponse =
+  ExtractKeywordsApiExtractKeywordsPostResponses[keyof ExtractKeywordsApiExtractKeywordsPostResponses];

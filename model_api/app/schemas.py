@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List, Union
 
 
 class TextRequest(BaseModel):
@@ -11,6 +12,14 @@ class Keyword(BaseModel):
     count: int
 
 
-class KeywordResponse(BaseModel):
+class ExtractKeywordsSuccess(BaseModel):
     status: str
-    keywords: list[Keyword]
+    keywords: List[Keyword]
+
+
+class ExtractKeywordsError(BaseModel):
+    status: str
+    message: str
+
+
+ExtractKeywordsResponse = Union[ExtractKeywordsSuccess, ExtractKeywordsError]
