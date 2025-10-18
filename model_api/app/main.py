@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .schemas import TextRequest
+from .schemas import TextRequest, ExtractKeywordsResponse
 from .modules.keyword import extract_keywords_core
 
 app = FastAPI()
@@ -16,7 +16,7 @@ def read_item(item_id: int, q: str = ""):
 
 
 # キーワード抽出
-@app.post("/extract_keywords")
+@app.post("/extract_keywords", response_model=ExtractKeywordsResponse)
 def extract_keywords_api(request: TextRequest):
     try:
         keywords = extract_keywords_core(request.text, request.top_n)

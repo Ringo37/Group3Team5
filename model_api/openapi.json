@@ -63,7 +63,17 @@
         "responses": {
           "200": {
             "description": "Successful Response",
-            "content": { "application/json": { "schema": {} } }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    { "$ref": "#/components/schemas/ExtractKeywordsSuccess" },
+                    { "$ref": "#/components/schemas/ExtractKeywordsError" }
+                  ],
+                  "title": "Response Extract Keywords Api Extract Keywords Post"
+                }
+              }
+            }
           },
           "422": {
             "description": "Validation Error",
@@ -79,6 +89,28 @@
   },
   "components": {
     "schemas": {
+      "ExtractKeywordsError": {
+        "properties": {
+          "status": { "type": "string", "title": "Status" },
+          "message": { "type": "string", "title": "Message" }
+        },
+        "type": "object",
+        "required": ["status", "message"],
+        "title": "ExtractKeywordsError"
+      },
+      "ExtractKeywordsSuccess": {
+        "properties": {
+          "status": { "type": "string", "title": "Status" },
+          "keywords": {
+            "items": { "$ref": "#/components/schemas/Keyword" },
+            "type": "array",
+            "title": "Keywords"
+          }
+        },
+        "type": "object",
+        "required": ["status", "keywords"],
+        "title": "ExtractKeywordsSuccess"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -89,6 +121,15 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "Keyword": {
+        "properties": {
+          "word": { "type": "string", "title": "Word" },
+          "count": { "type": "integer", "title": "Count" }
+        },
+        "type": "object",
+        "required": ["word", "count"],
+        "title": "Keyword"
       },
       "TextRequest": {
         "properties": {
