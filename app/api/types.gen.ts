@@ -15,6 +15,20 @@ export type HttpValidationError = {
 };
 
 /**
+ * TextRequest
+ */
+export type TextRequest = {
+  /**
+   * Text
+   */
+  text: string;
+  /**
+   * Top N
+   */
+  top_n?: number;
+};
+
+/**
  * ValidationError
  */
 export type ValidationError = {
@@ -74,6 +88,30 @@ export type ReadItemItemsItemIdGetError =
   ReadItemItemsItemIdGetErrors[keyof ReadItemItemsItemIdGetErrors];
 
 export type ReadItemItemsItemIdGetResponses = {
+  /**
+   * Successful Response
+   */
+  200: unknown;
+};
+
+export type ExtractKeywordsApiExtractKeywordsPostData = {
+  body: TextRequest;
+  path?: never;
+  query?: never;
+  url: "/extract_keywords";
+};
+
+export type ExtractKeywordsApiExtractKeywordsPostErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
+
+export type ExtractKeywordsApiExtractKeywordsPostError =
+  ExtractKeywordsApiExtractKeywordsPostErrors[keyof ExtractKeywordsApiExtractKeywordsPostErrors];
+
+export type ExtractKeywordsApiExtractKeywordsPostResponses = {
   /**
    * Successful Response
    */
