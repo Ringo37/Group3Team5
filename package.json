@@ -27,7 +27,13 @@
     "openapi": "npm run openapi-py && npm run openapi-ts"
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
+    "*.{ts,tsx, js, jsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{cjs, mjs, md, json}": [
+      "prettier --write"
+    ]
   },
   "prisma": {
     "seed": "tsx ./prisma/seed.ts"
