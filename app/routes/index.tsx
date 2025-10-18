@@ -67,6 +67,19 @@ export default function Index() {
             </Button>
           </Form>
         </HStack>
+        <Link to={"/sample"}>
+          <Button
+            bg="green.400"
+            color="white"
+            size="lg"
+            px={8}
+            borderRadius="full"
+            _hover={{ bg: "green.500", transform: "scale(1.05)" }}
+            boxShadow="md"
+          >
+            サンプル
+          </Button>
+        </Link>
       </VStack>
     </Box>
   );
