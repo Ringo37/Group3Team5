@@ -19,7 +19,9 @@
     "setup:python": "cd model_api && (python3 -m venv venv || python -m venv venv) && (./venv/bin/pip install -r requirements.txt || venv\\Scripts\\pip install -r requirements.txt)",
     "setup": "npm-run-all --parallel setup:*",
     "migrate": "npx prisma migrate deploy",
-    "lint": "npx eslint",
+    "lint:ts": "npx eslint --fix",
+    "lint:python": "cd model_api && (./venv/bin/python -m flake8 app/ --exit-zero || venv\\Scripts\\python -m flake8 app\\ --exit-zero)",
+    "lint": "npm-run-all --parallel lint:*",
     "openapi-ts": "openapi-ts",
     "openapi-py": "cd model_api && (./venv/bin/python openapi.py || venv\\Scripts\\python openapi.py)",
     "openapi": "npm run openapi-py && npm run openapi-ts"
