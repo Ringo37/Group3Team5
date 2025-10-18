@@ -1,0 +1,73 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  setup-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.12"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # TypeScript/Node.js のセットアップ
+      - name: Install Node Dependencies
+        run: npm install
+
+      # Pythonのセットアップ
+      - name: Setup Python Virtual Environment and Install Dependencies
+        working-directory: ./model_api
+        run: |
+          python3 -m venv venv
+          ./venv/bin/pip install -r requirements.txt
+
+      - name: Cache Dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            model_api/venv
+          key: ${{ runner.os }}-deps-${{ hashFiles('package-lock.json', 'model_api/requirements.txt') }}
+
+  lint-and-typecheck:
+    needs: setup-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Restore Dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            model_api/venv
+          key: ${{ runner.os }}-deps-${{ hashFiles('package-lock.json', 'model_api/requirements.txt') }}
+
+      # TypeScript の型チェック (typecheck)
+      - name: Run TypeScript Type Check
+        run: npm run typecheck
+
+      # TypeScript のリンティング (lint:ts)
+      - name: Run TypeScript Lint
+        run: npm run lint:ts
+
+      # Python のリンティング (lint:python)
+      - name: Run Python Lint (Flake8)
+        working-directory: ./model_api
+        run: ./venv/bin/python -m flake8 app/
