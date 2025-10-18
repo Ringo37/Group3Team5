@@ -55,7 +55,7 @@ FastAPIの型定義
 npm run openapi
 ```
 
-eslintの実行(コードに問題がないか確認)
+リンターの実行(コードに問題がないか確認)
 
 ```bash
 npm run lint
@@ -85,10 +85,10 @@ Group3Team5/
 ├── .env  
 ├── .gitignore  
 ├── docker-compose.yaml #DB用  
-├── public/ #画像とか  
-├── prisma/ #データベース関連  
-│ ├── schema.prisma #データベースのスキーマ  
-│ └── seed.ts #データベースのシード  
+├── public/ # 画像とか  
+├── prisma/ # データベース関連  
+│ ├── schema.prisma # データベースのスキーマ  
+│ └── seed.ts # データベースのシード  
 │  
 ├── model_api/ # Python (FastAPI)  
 │ ├── app # FastAPI  
