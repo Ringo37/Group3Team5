@@ -49,7 +49,7 @@ npm run dev
 - ReactRouterは `http://localhost:5173`
 - FastAPIは `http://localhost:8000`
 
-FastAPIの型定義
+APIの型定義等
 
 ```bash
 npm run openapi
@@ -65,6 +65,12 @@ npm run lint
 
 ```bash
 npm run format
+```
+
+Python依存関係インストール ※依存関係変更時に実行
+
+```bash
+npm run setup:python
 ```
 
 ### ビルド

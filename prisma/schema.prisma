@@ -55,9 +55,10 @@ model Password {
 }
 
 model InterestTag {
-  id   String @id @default(cuid())
-  tag  String @unique
-  user User[]
+  id      String    @id @default(cuid())
+  tag     String    @unique
+  user    User[]
+  knowhow Knowhow[]
 }
 
 model Organization {
@@ -81,21 +82,28 @@ model Farm {
   WorkLog  WorkLog[]
 }
 
-model Knowhow {
-  id          Int      @id @default(autoincrement())
-  title       String
-  summary     String?
-  fullText    String?  @map("full_text")
-  sensitivity String?
-  tags        String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  farmId      Int
-  userId      String
+enum Visibility {
+  PUBLIC
+  SUMMARY_ONLY
+  RESTRICTED
+}
 
-  farm       Farm        @relation(fields: [farmId], references: [id])
-  user       User        @relation(fields: [userId], references: [id])
+model Knowhow {
+  id       Int     @id @default(autoincrement())
+  title    String
+  summary  String?
+  fullText String?
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  farmId     Int
+  userId     String
+  visibility Visibility
+
+  farm       Farm          @relation(fields: [farmId], references: [id])
+  user       User          @relation(fields: [userId], references: [id])
   accessLogs AccessLog[]
+  tags       InterestTag[]
 }
 
 model AccessLog {
