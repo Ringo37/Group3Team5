@@ -16,6 +16,7 @@ export default [
       ".env",
       "coverage/**",
       "app/api/**",
+      "model_api/venv/**",
     ],
   },
   {
