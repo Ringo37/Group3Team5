@@ -1,5 +1,25 @@
 # Group3Team5
 
+## ブランチ命名規則
+
+- 機能追加: feature/#<issue番号>-<概要>
+- バグ修正: fix/#<issue番号>-<概要>
+- リファクタリング: refactor/#<issue番号>-<概要>
+
+## 以下をコミット前に行いエラーが発生する場合は修正する
+
+リンターの実行(コードに問題がないか確認)
+
+```bash
+npm run lint
+```
+
+フォーマットの実行(コード整形)
+
+```bash
+npm run format
+```
+
 ## Getting Started
 
 ### 依存関係のインストール
@@ -55,18 +75,6 @@ APIの型定義等
 npm run openapi
 ```
 
-リンターの実行(コードに問題がないか確認)
-
-```bash
-npm run lint
-```
-
-フォーマットの実行(コード整形)
-
-```bash
-npm run format
-```
-
 Python依存関係インストール ※依存関係変更時に実行
 
 ```bash
@@ -116,9 +124,3 @@ Group3Team5/
 │ └── root.tsx  
 │  
 └── package.json #コマンドやパッケージ類
-
-## ブランチ命名規則
-
-- 機能追加: feature/#<issue番号>-<概要>
-- バグ修正: fix/#<issue番号>-<概要>
-- リファクタリング: refactor/#<issue番号>-<概要>

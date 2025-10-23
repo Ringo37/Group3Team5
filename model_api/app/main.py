@@ -1,8 +1,12 @@
-from fastapi import FastAPI, HTTPException
-from .schemas import TextRequest, ExtractKeywordsResponse, RecommendRequest, RecommendResponse
+from fastapi import FastAPI
+from .schemas import (
+    TextRequest,
+    ExtractKeywordsResponse,
+    RecommendRequest,
+    RecommendResponse,
+)
 from .modules.keyword import extract_keywords_core
 from .modules.recommend import recommend
-
 
 
 app = FastAPI()
@@ -26,7 +30,6 @@ def extract_keywords_api(request: TextRequest):
         return {"status": "success", "keywords": keywords}
     except Exception as e:
         return {"status": "error", "message": str(e)}
-    
 
 
 @app.post("/recommend", response_model=RecommendResponse)
@@ -35,19 +38,21 @@ def recommend_api(request: RecommendRequest):
     all_tags = list(
         set(
             sum(
-                [k.tags.split(',') for k in request.knowhows] +
-                [l.interest_tags.split(',') for l in request.learners],
-                []
+                [m.tags.split(",") for m in request.knowhows]
+                + [n.interest_tags.split(",") for n in request.learners],
+                [],
             )
         )
     )
-    learner = next((le for le in request.learners if le.name == request.user_name), None)
+    learner = next(
+        (le for le in request.learners if le.name == request.user_name), None
+    )
     if learner is None:
         return {"recommendations": []}
     result = recommend(
         [k.dict() for k in request.knowhows],
         learner.dict(),
         all_tags,
-        top_n=request.top_n
+        top_n=request.top_n,
     )
     return {"recommendations": result}
