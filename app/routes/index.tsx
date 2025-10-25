@@ -80,6 +80,20 @@ export default function Index() {
             サンプル
           </Button>
         </Link>
+        {/* ✅ 新しく追加した部分 */}
+        <Link to="/worklogformat">
+          <Button
+            bg="teal.400"
+            color="white"
+            size="lg"
+            px={8}
+            borderRadius="full"
+            _hover={{ bg: "teal.500", transform: "scale(1.05)" }}
+            boxShadow="md"
+          >
+            日誌
+          </Button>
+        </Link>
       </VStack>
     </Box>
   );
