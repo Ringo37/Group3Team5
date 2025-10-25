@@ -9,7 +9,6 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import { ColorModeProvider } from "./components/ui/color-mode";
 import { Provider } from "./components/ui/provider";
 
 export const links: Route.LinksFunction = () => [
@@ -35,9 +34,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <Provider>
-          <ColorModeProvider>{children}</ColorModeProvider>
-        </Provider>
+        <Provider>{children}</Provider>
         <ScrollRestoration />
         <Scripts />
       </body>

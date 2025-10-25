@@ -23,3 +23,26 @@ class ExtractKeywordsError(BaseModel):
 
 
 ExtractKeywordsResponse = Union[ExtractKeywordsSuccess, ExtractKeywordsError]
+
+
+class KnowHow(BaseModel):
+    id: int
+    title: str
+    tags: str
+
+
+class Learner(BaseModel):
+    user_id: int
+    name: str
+    interest_tags: str
+
+
+class RecommendRequest(BaseModel):
+    knowhows: List[KnowHow]
+    learners: List[Learner]
+    user_name: str
+    top_n: int = 5
+
+
+class RecommendResponse(BaseModel):
+    recommendations: list

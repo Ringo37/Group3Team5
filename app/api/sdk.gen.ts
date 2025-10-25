@@ -11,6 +11,9 @@ import type {
   ReadItemItemsItemIdGetResponses,
   ReadRootGetData,
   ReadRootGetResponses,
+  RecommendApiRecommendPostData,
+  RecommendApiRecommendPostErrors,
+  RecommendApiRecommendPostResponses,
 } from "./types.gen";
 
 export type Options<
@@ -76,6 +79,26 @@ export const extractKeywordsApiExtractKeywordsPost = <
     ThrowOnError
   >({
     url: "/extract_keywords",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+};
+
+/**
+ * Recommend Api
+ */
+export const recommendApiRecommendPost = <ThrowOnError extends boolean = false>(
+  options: Options<RecommendApiRecommendPostData, ThrowOnError>,
+) => {
+  return (options.client ?? client).post<
+    RecommendApiRecommendPostResponses,
+    RecommendApiRecommendPostErrors,
+    ThrowOnError
+  >({
+    url: "/recommend",
     ...options,
     headers: {
       "Content-Type": "application/json",

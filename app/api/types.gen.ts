@@ -57,6 +57,74 @@ export type Keyword = {
 };
 
 /**
+ * KnowHow
+ */
+export type KnowHow = {
+  /**
+   * Id
+   */
+  id: number;
+  /**
+   * Title
+   */
+  title: string;
+  /**
+   * Tags
+   */
+  tags: string;
+};
+
+/**
+ * Learner
+ */
+export type Learner = {
+  /**
+   * User Id
+   */
+  user_id: number;
+  /**
+   * Name
+   */
+  name: string;
+  /**
+   * Interest Tags
+   */
+  interest_tags: string;
+};
+
+/**
+ * RecommendRequest
+ */
+export type RecommendRequest = {
+  /**
+   * Knowhows
+   */
+  knowhows: Array<KnowHow>;
+  /**
+   * Learners
+   */
+  learners: Array<Learner>;
+  /**
+   * User Name
+   */
+  user_name: string;
+  /**
+   * Top N
+   */
+  top_n?: number;
+};
+
+/**
+ * RecommendResponse
+ */
+export type RecommendResponse = {
+  /**
+   * Recommendations
+   */
+  recommendations: Array<unknown>;
+};
+
+/**
  * TextRequest
  */
 export type TextRequest = {
@@ -164,3 +232,30 @@ export type ExtractKeywordsApiExtractKeywordsPostResponses = {
 
 export type ExtractKeywordsApiExtractKeywordsPostResponse =
   ExtractKeywordsApiExtractKeywordsPostResponses[keyof ExtractKeywordsApiExtractKeywordsPostResponses];
+
+export type RecommendApiRecommendPostData = {
+  body: RecommendRequest;
+  path?: never;
+  query?: never;
+  url: "/recommend";
+};
+
+export type RecommendApiRecommendPostErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
+
+export type RecommendApiRecommendPostError =
+  RecommendApiRecommendPostErrors[keyof RecommendApiRecommendPostErrors];
+
+export type RecommendApiRecommendPostResponses = {
+  /**
+   * Successful Response
+   */
+  200: RecommendResponse;
+};
+
+export type RecommendApiRecommendPostResponse =
+  RecommendApiRecommendPostResponses[keyof RecommendApiRecommendPostResponses];
