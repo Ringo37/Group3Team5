@@ -9,6 +9,7 @@ import {
   Container,
   Textarea,
   Code,
+  StackProps,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import {
@@ -79,7 +80,8 @@ export default function WorkLogForm() {
         {/* フォーム */}
         <Box p={6} shadow="lg" borderWidth="1px" borderRadius="lg">
           <RouterForm method="post">
-            <VStack spacing={4} align="stretch">
+            {/* 型キャストで spacing / align の型エラー回避 */}
+            <VStack spacing={4} align="stretch" {...({} as StackProps)}>
               <Textarea
                 name="text"
                 placeholder="分析したい作業内容を入力してください"
@@ -128,7 +130,7 @@ export default function WorkLogForm() {
               抽出結果
             </Heading>
 
-            <VStack align="stretch" spacing={2}>
+            <VStack align="stretch" spacing={2} {...({} as StackProps)}>
               {actionData.keywords.keywords.map((item, index) => (
                 <HStack
                   key={index}
@@ -140,6 +142,7 @@ export default function WorkLogForm() {
                   justifyContent="space-between"
                   onClick={() => toggleTag(item.word)}
                   cursor="pointer"
+                  {...({} as StackProps)}
                 >
                   <Text fontWeight="bold" color="teal.600">
                     {index + 1}.
