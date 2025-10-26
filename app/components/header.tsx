@@ -10,10 +10,8 @@ import {
   AvatarGroup,
 } from "@chakra-ui/react";
 import type { User } from "@prisma/client";
-import { Search, Edit } from "lucide-react";
+import { Search } from "lucide-react";
 import { Form, Link } from "react-router";
-
-import { ColorModeButton } from "./ui/color-mode";
 
 interface HeaderUser extends User {
   image?: string | null;
@@ -48,7 +46,7 @@ export default function Header({ user }: { user: HeaderUser | null }) {
           </Box>
         </Link>
 
-        <HStack display={{ base: "none", md: "flex" }}>
+        <HStack>
           <Link to="explore">
             <Box fontWeight="medium" _hover={{ color: "teal.500" }}>
               ノウハウを探す
@@ -84,24 +82,8 @@ export default function Header({ user }: { user: HeaderUser | null }) {
 
       {/* ユーザーアクション */}
       <HStack align="center">
-        <ColorModeButton />
-
         {user ? (
           <>
-            <Link to="/new">
-              <Button
-                colorScheme="teal"
-                display={{ base: "none", md: "inline-flex" }}
-                tabIndex={-1}
-              >
-                <Edit size={16} />
-                <Box as="span" ml={2}>
-                  {" "}
-                  ボタン仮
-                </Box>
-              </Button>
-            </Link>
-
             <Menu.Root>
               <Menu.Trigger _focus={{ borderRadius: "full" }}>
                 <AvatarGroup>
@@ -144,7 +126,7 @@ export default function Header({ user }: { user: HeaderUser | null }) {
             </Menu.Root>
           </>
         ) : (
-          <HStack display={{ base: "none", md: "flex" }}>
+          <HStack>
             <Link to="/login">
               <Button variant="ghost">ログイン</Button>
             </Link>
@@ -154,6 +136,27 @@ export default function Header({ user }: { user: HeaderUser | null }) {
           </HStack>
         )}
       </HStack>
+
+      {/* モバイル用検索バー */}
+      <Box
+        flex={1}
+        minWidth={{ base: "200px", md: "200px" }}
+        width={{ base: "full", md: "auto" }}
+        mx={0}
+        display={{ base: "block", md: "none" }}
+      >
+        <InputGroup startElement={<Search size={16} color="gray" />}>
+          <Input
+            type="search"
+            placeholder="キーワードでノウハウを検索..."
+            borderRadius="full"
+            bg="gray.50"
+            _dark={{ bg: "gray.700", borderColor: "gray.600" }}
+            borderColor="gray.300"
+            pl={10}
+          />
+        </InputGroup>
+      </Box>
     </Flex>
   );
 }
