@@ -132,4 +132,5 @@ Group3Team5/
 └── package.json #コマンドやパッケージ類
 
 ## トラブルシューティング
+
 - もし、AIなどが出力するコードのChakra UIコンポーネントで型エラーが発生する場合、バージョン違いによる問題かと思われます。https://zenn.dev/anyland/articles/3d2b09eb8198a3

@@ -1,18 +1,16 @@
 import {
   Flex,
   Box,
-  Heading,
   HStack,
   Button,
-  Link as ChakraLink,
+  Input,
   Avatar,
   Menu,
   InputGroup,
-  Input,
 } from "@chakra-ui/react";
 import type { User } from "@prisma/client";
 import { Search, Edit } from "lucide-react";
-import { Form, Link as RouterLink } from "react-router";
+import { Form, Link } from "react-router";
 
 import { ColorModeButton } from "./ui/color-mode";
 
@@ -43,25 +41,23 @@ export default function Header({ user }: { user: HeaderUser | null }) {
     >
       {/* ロゴとか */}
       <HStack>
-        <RouterLink to="/">
-          <ChakraLink _hover={{ textDecoration: "none" }}>
-            <Heading as="h1" size="lg" color="teal.500">
-              農ハウ(仮)
-            </Heading>
-          </ChakraLink>
-        </RouterLink>
+        <Link to="/">
+          <Box fontSize="lg" fontWeight="bold" color="teal.500">
+            農ハウ(仮)
+          </Box>
+        </Link>
 
         <HStack display={{ base: "none", md: "flex" }}>
-          <RouterLink to="explore">
-            <ChakraLink fontWeight="medium" _hover={{ color: "teal.500" }}>
+          <Link to="explore">
+            <Box fontWeight="medium" _hover={{ color: "teal.500" }}>
               ノウハウを探す
-            </ChakraLink>
-          </RouterLink>
-          <RouterLink to="categories">
-            <ChakraLink fontWeight="medium" _hover={{ color: "teal.500" }}>
+            </Box>
+          </Link>
+          <Link to="categories">
+            <Box fontWeight="medium" _hover={{ color: "teal.500" }}>
               カテゴリ
-            </ChakraLink>
-          </RouterLink>
+            </Box>
+          </Link>
         </HStack>
       </HStack>
 
@@ -72,27 +68,16 @@ export default function Header({ user }: { user: HeaderUser | null }) {
         mx={8}
         display={{ base: "none", md: "block" }}
       >
-        <InputGroup>
-          <>
-            <Box
-              pointerEvents="none"
-              pl={4}
-              h="100%"
-              display="flex"
-              alignItems="center"
-            >
-              <Search size={16} color="gray" />
-            </Box>
-            <Input
-              type="search"
-              placeholder="キーワードでノウハウを検索..."
-              borderRadius="full"
-              bg="gray.50"
-              _dark={{ bg: "gray.700", borderColor: "gray.600" }}
-              borderColor="gray.300"
-              pl={10}
-            />
-          </>
+        <InputGroup startElement={<Search size={16} color="gray" />}>
+          <Input
+            type="search"
+            placeholder="キーワードでノウハウを検索..."
+            borderRadius="full"
+            bg="gray.50"
+            _dark={{ bg: "gray.700", borderColor: "gray.600" }}
+            borderColor="gray.300"
+            pl={10}
+          />
         </InputGroup>
       </Box>
 
@@ -102,7 +87,7 @@ export default function Header({ user }: { user: HeaderUser | null }) {
 
         {user ? (
           <>
-            <RouterLink to="/new">
+            <Link to="/new">
               <Button
                 colorScheme="teal"
                 display={{ base: "none", md: "inline-flex" }}
@@ -113,7 +98,7 @@ export default function Header({ user }: { user: HeaderUser | null }) {
                   ボタン仮
                 </Box>
               </Button>
-            </RouterLink>
+            </Link>
 
             <Menu.Root>
               <Menu.Trigger asChild>
@@ -137,12 +122,12 @@ export default function Header({ user }: { user: HeaderUser | null }) {
 
               <Menu.Positioner>
                 <Menu.Content>
-                  <RouterLink to={`/profile/${user.id}`}>
+                  <Link to={`/profile/${user.id}`}>
                     <Menu.Item value="マイページ">マイページ</Menu.Item>
-                  </RouterLink>
-                  <RouterLink to="/settings">
+                  </Link>
+                  <Link to="/settings">
                     <Menu.Item value="設定">設定</Menu.Item>
-                  </RouterLink>
+                  </Link>
                   <Menu.Separator />
                   <Form action="/logout" method="post">
                     <Button
@@ -163,12 +148,12 @@ export default function Header({ user }: { user: HeaderUser | null }) {
           </>
         ) : (
           <HStack display={{ base: "none", md: "flex" }}>
-            <RouterLink to="/login">
+            <Link to="/login">
               <Button variant="ghost">ログイン</Button>
-            </RouterLink>
-            <RouterLink to="/signup">
+            </Link>
+            <Link to="/signup">
               <Button colorScheme="teal">新規登録</Button>
-            </RouterLink>
+            </Link>
           </HStack>
         )}
       </HStack>
