@@ -24,7 +24,8 @@
     "lint": "npm-run-all --parallel lint:*",
     "openapi-ts": "openapi-ts",
     "openapi-py": "cd model_api && (./venv/bin/python openapi.py || venv\\Scripts\\python openapi.py)",
-    "openapi": "npm run openapi-py && npm run openapi-ts"
+    "openapi": "npm run openapi-py && npm run openapi-ts",
+    "check": "npm run typecheck && npm run lint && npm run format"
   },
   "lint-staged": {
     "*.{ts,tsx, js, jsx}": [
@@ -41,10 +42,12 @@
   "dependencies": {
     "@chakra-ui/react": "^3.27.1",
     "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@prisma/client": "^6.17.0",
     "@react-router/node": "^7.9.2",
     "@react-router/serve": "^7.9.2",
     "bcryptjs": "^3.0.2",
+    "framer-motion": "^12.23.24",
     "isbot": "^5.1.31",
     "lucide-react": "^0.546.0",
     "next-themes": "^0.4.6",

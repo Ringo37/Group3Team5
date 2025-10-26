@@ -5,10 +5,10 @@ import {
   HStack,
   Button,
   Link as ChakraLink,
-  Input,
   Avatar,
   Menu,
   InputGroup,
+  Input,
 } from "@chakra-ui/react";
 import type { User } from "@prisma/client";
 import { Search, Edit } from "lucide-react";
