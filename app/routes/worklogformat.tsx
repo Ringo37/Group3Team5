@@ -4,13 +4,13 @@ import {
   VStack,
   HStack,
   Heading,
-  Button,
   Text,
   Container,
   Textarea,
   Code,
-  StackProps,
+  Button,
 } from "@chakra-ui/react";
+import type { StackProps } from "@chakra-ui/react";
 import { useState } from "react";
 import {
   Form as RouterForm,
@@ -72,7 +72,7 @@ export default function WorkLogForm() {
 
   return (
     <Container maxW="container.md" py={10}>
-      <VStack align="stretch" spacing={6}>
+      <VStack align="stretch" gap={6}>
         <Heading as="h1" size="xl" textAlign="center" color="teal.600">
           作業ログキーワード抽出
         </Heading>
@@ -81,7 +81,7 @@ export default function WorkLogForm() {
         <Box p={6} shadow="lg" borderWidth="1px" borderRadius="lg">
           <RouterForm method="post">
             {/* 型キャストで spacing / align の型エラー回避 */}
-            <VStack spacing={4} align="stretch" {...({} as StackProps)}>
+            <VStack gap={4} align="stretch" {...({} as StackProps)}>
               <Textarea
                 name="text"
                 placeholder="分析したい作業内容を入力してください"
@@ -101,7 +101,7 @@ export default function WorkLogForm() {
                 colorScheme="teal"
                 size="lg"
                 width="full"
-                isLoading={isSubmitting}
+                loading={isSubmitting}
                 loadingText="抽出中..."
               >
                 キーワードを抽出
@@ -130,7 +130,7 @@ export default function WorkLogForm() {
               抽出結果
             </Heading>
 
-            <VStack align="stretch" spacing={2} {...({} as StackProps)}>
+            <VStack align="stretch" gap={2} {...({} as StackProps)}>
               {actionData.keywords.keywords.map((item, index) => (
                 <HStack
                   key={index}
