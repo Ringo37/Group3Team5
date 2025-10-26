@@ -1,4 +1,3 @@
-import { InputGroup, Input } from "@chakra-ui/input";
 import {
   Flex,
   Box,
@@ -8,6 +7,8 @@ import {
   Link as ChakraLink,
   Avatar,
   Menu,
+  InputGroup,
+  Input,
 } from "@chakra-ui/react";
 import type { User } from "@prisma/client";
 import { Search, Edit } from "lucide-react";
