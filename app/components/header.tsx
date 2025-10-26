@@ -7,6 +7,7 @@ import {
   Avatar,
   Menu,
   InputGroup,
+  AvatarGroup,
 } from "@chakra-ui/react";
 import type { User } from "@prisma/client";
 import { Search, Edit } from "lucide-react";
@@ -91,6 +92,7 @@ export default function Header({ user }: { user: HeaderUser | null }) {
               <Button
                 colorScheme="teal"
                 display={{ base: "none", md: "inline-flex" }}
+                tabIndex={-1}
               >
                 <Edit size={16} />
                 <Box as="span" ml={2}>
@@ -101,13 +103,8 @@ export default function Header({ user }: { user: HeaderUser | null }) {
             </Link>
 
             <Menu.Root>
-              <Menu.Trigger asChild>
-                <Button
-                  rounded={"full"}
-                  variant={"surface"}
-                  cursor={"pointer"}
-                  minW={0}
-                >
+              <Menu.Trigger _focus={{ borderRadius: "full" }}>
+                <AvatarGroup>
                   <Avatar.Root size="sm">
                     <Avatar.Image
                       src={user.image || undefined}
@@ -117,7 +114,7 @@ export default function Header({ user }: { user: HeaderUser | null }) {
                       {user.name ? user.name.charAt(0).toUpperCase() : "U"}
                     </Avatar.Fallback>
                   </Avatar.Root>
-                </Button>
+                </AvatarGroup>
               </Menu.Trigger>
 
               <Menu.Positioner>
