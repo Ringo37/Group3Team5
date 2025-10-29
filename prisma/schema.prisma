@@ -20,8 +20,7 @@ enum Role {
 }
 
 enum Action {
-  READ
-  WRITE
+  VIEW
   DELETE
   CREATE
   UPDATE
@@ -37,7 +36,8 @@ model User {
   role      Role     @default(USER)
 
   password                Password?
-  organizations           Organization[]
+  organizations           Organization[] @relation("Organization")
+  ownedOrganizations      Organization[] @relation("OwnedOrganization")
   accessLogs              AccessLog[]
   knowhows                Knowhow[]
   ndaAgreementsAsProvider NdaAgreement[] @relation("Provider")
@@ -66,20 +66,28 @@ model Organization {
   name   String
   detail String?
 
-  users User[]
+  owner User[] @relation("OwnedOrganization")
+  users User[] @relation("Organization")
+}
+
+model Crop {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  Farm Farm[]
 }
 
 model Farm {
   id               Int    @id @default(autoincrement())
+  name             String
   region           String
   areaHa           Float
-  farmType         String
-  mainCrops        String
   seasonalCalendar String
 
-  user     User[]
-  knowhows Knowhow[]
-  WorkLog  WorkLog[]
+  user      User[]
+  knowhows  Knowhow[]
+  WorkLog   WorkLog[]
+  mainCrops Crop      @relation(fields: [cropId], references: [id])
+  cropId    Int
 }
 
 enum Visibility {
