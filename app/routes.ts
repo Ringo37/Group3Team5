@@ -12,5 +12,6 @@ export default [
   layout("routes/layout.tsx", [
     route("sample", "routes/sample.tsx"),
     route("worklogformat", "routes/worklogformat.tsx"),
+    route("edit_interest_tags", "routes/edit_interest_tags.tsx"),
   ]),
 ] satisfies RouteConfig;
