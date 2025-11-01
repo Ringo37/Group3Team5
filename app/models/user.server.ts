@@ -3,6 +3,20 @@ import bcrypt from "bcryptjs";
 
 import { prisma } from "~/lib/prisma";
 
+import { createTags } from "./tag.server";
+
+export async function addInterestTag(id: User["id"], tags: string[]) {
+  await createTags(tags);
+  return prisma.user.update({
+    where: { id },
+    data: {
+      InterestTag: {
+        connect: tags.map((tag) => ({ tag })),
+      },
+    },
+  });
+}
+
 export async function getUserById(id: User["id"]) {
   return prisma.user.findUnique({ where: { id } });
 }
