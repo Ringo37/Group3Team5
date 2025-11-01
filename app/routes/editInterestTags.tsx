@@ -2,6 +2,7 @@ import { Button, Input, Box, Heading, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import {
   Form,
+  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from "react-router";
@@ -21,8 +22,9 @@ export async function action({ request }: ActionFunctionArgs) {
   console.log(tags);
   const tagList = tags.split(",").map((s) => s.trim());
   await addInterestTag(user.id, tagList);
-  return {};
+  return redirect("/mypage");
 }
+
 export default function EditInterestTagsPage() {
   const [tags, setTags] = useState("");
 
