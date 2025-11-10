@@ -45,6 +45,7 @@ model User {
   Farm                    Farm[]
   WorkLog                 WorkLog[]
   InterestTag             InterestTag[]
+  accessibleKnowhows      Knowhow[]      @relation("KnowhowAccess")
 }
 
 model Password {
@@ -55,10 +56,10 @@ model Password {
 }
 
 model InterestTag {
-  id      String    @id @default(cuid())
-  tag     String    @unique
-  user    User[]
-  knowhow Knowhow[]
+  id       String    @id @default(cuid())
+  tag      String    @unique
+  users    User[]
+  knowhows Knowhow[]
 }
 
 model Organization {
@@ -66,8 +67,8 @@ model Organization {
   name   String
   detail String?
 
-  owner User[] @relation("OwnedOrganization")
-  users User[] @relation("Organization")
+  owners User[] @relation("OwnedOrganization")
+  users  User[] @relation("Organization")
 }
 
 model Crop {
@@ -83,11 +84,13 @@ model Farm {
   areaHa           Float
   seasonalCalendar String
 
-  user      User[]
-  knowhows  Knowhow[]
-  WorkLog   WorkLog[]
-  mainCrops Crop      @relation(fields: [cropId], references: [id])
-  cropId    Int
+  users    User[]
+  knowhows Knowhow[]
+  WorkLogs WorkLog[]
+  mainCrop Crop      @relation(fields: [cropId], references: [id])
+  cropId   Int
+
+  @@index([cropId])
 }
 
 enum Visibility {
@@ -108,10 +111,14 @@ model Knowhow {
   userId     String
   visibility Visibility
 
-  farm       Farm          @relation(fields: [farmId], references: [id])
-  user       User          @relation(fields: [userId], references: [id])
-  accessLogs AccessLog[]
-  tags       InterestTag[]
+  farm            Farm          @relation(fields: [farmId], references: [id])
+  user            User          @relation(fields: [userId], references: [id])
+  accessibleUsers User[]        @relation("KnowhowAccess")
+  accessLogs      AccessLog[]
+  tags            InterestTag[]
+
+  @@index([farmId])
+  @@index([userId])
 }
 
 model AccessLog {
@@ -123,6 +130,9 @@ model AccessLog {
 
   knowhow Knowhow @relation(fields: [knowhowId], references: [id])
   user    User    @relation(fields: [userId], references: [id])
+
+  @@index([knowhowId])
+  @@index([userId])
 }
 
 model NdaAgreement {
@@ -134,6 +144,9 @@ model NdaAgreement {
 
   provider User @relation("Provider", fields: [providerId], references: [id])
   learner  User @relation("Learner", fields: [learnerId], references: [id])
+
+  @@index([providerId])
+  @@index([learnerId])
 }
 
 enum WeatherCondition {
@@ -161,4 +174,8 @@ model WorkLog {
   farm   Farm   @relation(fields: [farmId], references: [id])
   userId String
   user   User   @relation(fields: [userId], references: [id])
+
+  @@index([farmId])
+  @@index([userId])
+  @@index([date])
 }

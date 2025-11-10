@@ -23,10 +23,10 @@ export async function createFarm({
       region,
       areaHa,
       seasonalCalendar,
-      user: {
+      users: {
         connect: { id: userId },
       },
-      mainCrops: {
+      mainCrop: {
         connect: { id: cropId },
       },
     },
@@ -39,7 +39,7 @@ interface UpdateFarmProps {
   region: string;
   areaHa: number;
   seasonalCalendar: string;
-  userId: string[];
+  usersId: string[];
   cropId: number;
 }
 
@@ -49,7 +49,7 @@ export async function updateFarm({
   region,
   areaHa,
   seasonalCalendar,
-  userId,
+  usersId,
   cropId,
 }: UpdateFarmProps) {
   try {
@@ -60,10 +60,10 @@ export async function updateFarm({
         region,
         areaHa,
         seasonalCalendar,
-        user: {
-          set: userId.map((id) => ({ id })),
+        users: {
+          set: usersId.map((id) => ({ id })),
         },
-        mainCrops: {
+        mainCrop: {
           connect: { id: cropId },
         },
       },
