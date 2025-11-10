@@ -15,7 +15,7 @@ export async function createOrganization({
     data: {
       name,
       detail,
-      owner: {
+      owners: {
         connect: { id: ownerId },
       },
     },
@@ -26,14 +26,14 @@ interface UpdateOrganizationProps {
   id: string;
   name: string;
   detail?: string;
-  ownerId: string[];
+  ownersId: string[];
 }
 
 export async function updateOrganization({
   id,
   name,
   detail,
-  ownerId,
+  ownersId,
 }: UpdateOrganizationProps) {
   try {
     return await prisma.organization.update({
@@ -41,8 +41,8 @@ export async function updateOrganization({
       data: {
         name,
         detail,
-        owner: {
-          set: ownerId.map((id) => ({ id })),
+        owners: {
+          set: ownersId.map((id) => ({ id })),
         },
       },
     });
