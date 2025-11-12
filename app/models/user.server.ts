@@ -45,6 +45,22 @@ export async function createUser(
   });
 }
 
+export async function updateUser(
+  id: User["id"],
+  email: User["email"],
+  name: User["name"],
+  tel: User["tel"],
+) {
+  return prisma.user.update({
+    where: { id },
+    data: {
+      email,
+      name,
+      tel,
+    },
+  });
+}
+
 export async function verifyLogin(
   email: User["email"],
   password: Password["hash"],
