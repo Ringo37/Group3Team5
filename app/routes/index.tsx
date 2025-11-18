@@ -94,6 +94,20 @@ export default function Index() {
             日誌
           </Button>
         </Link>
+        {/* ✅ 興味・登録ページボタンの部分 */}
+        <Link to="/edit-interest-tags">
+          <Button
+            bg="blue.400"
+            color="white"
+            size="lg"
+            px={8}
+            borderRadius="full"
+            _hover={{ bg: "blue.500", transform: "scale(1.05)" }}
+            boxShadow="md"
+          >
+            興味を登録
+          </Button>
+        </Link>
       </VStack>
     </Box>
   );
