@@ -50,6 +50,7 @@ export async function updateUser(
   email: User["email"],
   name: User["name"],
   tel: User["tel"],
+  role?: User["role"],
 ) {
   return prisma.user.update({
     where: { id },
@@ -57,6 +58,7 @@ export async function updateUser(
       email,
       name,
       tel,
+      role,
     },
   });
 }
@@ -90,3 +92,5 @@ export async function verifyLogin(
 
   return userWithoutPassword;
 }
+
+export const getAllUsers = () => prisma.user.findMany();

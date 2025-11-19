@@ -29,3 +29,7 @@ export async function getAccessLogByKnowhowId(knowhowId: number) {
 export async function getAccessLogByUserId(userId: string) {
   return prisma.accessLog.findMany({ where: { user: { id: userId } } });
 }
+
+export async function getAllAccessLog() {
+  return prisma.accessLog.findMany({ include: { user: true, knowhow: true } });
+}
