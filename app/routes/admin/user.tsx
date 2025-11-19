@@ -7,7 +7,11 @@ import {
 } from "@chakra-ui/react";
 import type { Role } from "@prisma/client";
 import { useState } from "react";
-import { useFetcher, useLoaderData } from "react-router";
+import {
+  useFetcher,
+  useLoaderData,
+  type ActionFunctionArgs,
+} from "react-router";
 
 import { getAllUsers, updateUser } from "~/models/user.server";
 import { formatDate } from "~/utils/formatDate";
@@ -16,12 +20,12 @@ export async function loader() {
   const users = await getAllUsers();
   return { users };
 }
-export async function action({ request }: any) {
+export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
-  const userId = formData.get("id");
-  const email = formData.get("email");
-  const name = formData.get("name");
-  const tel = formData.get("tel");
+  const userId = formData.get("id") as string;
+  const email = formData.get("email") as string;
+  const name = formData.get("name") as string;
+  const tel = formData.get("tel") as string;
   const role = formData.get("role") as Role;
 
   await updateUser(userId, email, name, tel, role);

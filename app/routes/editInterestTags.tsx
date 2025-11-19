@@ -19,7 +19,6 @@ export async function action({ request }: ActionFunctionArgs) {
   const user = await requireUser(request);
   const formData = await request.formData();
   const tags = formData.get("tags") as string;
-  console.log(tags);
   const tagList = tags.split(",").map((s) => s.trim());
   await addInterestTag(user.id, tagList);
   return redirect("/mypage");

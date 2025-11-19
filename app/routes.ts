@@ -22,7 +22,6 @@ export default [
     layout("routes/admin/layout.tsx", [
       index("routes/admin/index.tsx"),
       route("tag", "routes/admin/tag.tsx"),
-      route("category", "routes/admin/category.tsx"),
       route("accessLog", "routes/admin/accessLog.tsx"),
       route("user", "routes/admin/user.tsx"),
     ]),

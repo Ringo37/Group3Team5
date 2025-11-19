@@ -64,7 +64,6 @@ export default function AdminLayout() {
             {[
               { key: "accesslog", label: "アクセスログ" },
               { key: "user", label: "ユーザー" },
-              { key: "category", label: "カテゴリー" },
               { key: "tag", label: "タグ" },
             ].map(({ key, label }) => (
               <Link to={`admin/${key}`}>
