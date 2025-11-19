@@ -61,7 +61,7 @@ npm run setup
 DBマイグレーション ※データベースに変更があった場合のみ実行
 
 ```bash
-npm run migrate
+npm run migrate:deploy
 ```
 
 ### 開発
@@ -124,7 +124,7 @@ Group3Team5/
 │ ├── services/ # ログイン関連  
 │ ├── utils/ # ユーティリティ  
 │ ├── lib/ # ライブラリ  
-│ ├── api/ # FastAPIの型定義  
+│ ├── api/ # FastAPIの型定義 ※ここは変えない  
 │ ├── routes.ts # ルートの定義  
 │ ├── app.css # CSSファイル  
 │ └── root.tsx  

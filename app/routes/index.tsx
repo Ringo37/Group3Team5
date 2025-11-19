@@ -43,7 +43,6 @@ const PostCard = () => {
         objectFit="cover"
       />
       <Box p={5}>
-        {/* Chakra v2なら noOfLines, v3なら lineClamp */}
         <Text fontWeight="bold" fontSize="lg" lineClamp={2} mb={2}>
           ここに投稿のタイトルが入ります
         </Text>
@@ -202,7 +201,28 @@ export default function Index() {
           </Flex>
         </Box>
       </Box>
-
+      <Box mb={8} p={4} bg="gray.50" borderRadius="md" textAlign="center">
+        <Text fontSize="sm" color="gray.500" mb={4}>
+          ※ 開発用リンク（後で削除予定）
+        </Text>
+        <Flex gap={4} justify="center" wrap="wrap">
+          <Link to={"/sample"}>
+            <Button size="sm" colorScheme="green" variant="outline">
+              サンプル
+            </Button>
+          </Link>
+          <Link to="/worklogformat">
+            <Button size="sm" colorScheme="teal" variant="outline">
+              日誌
+            </Button>
+          </Link>
+          <Link to="/edit-interest-tags">
+            <Button size="sm" colorScheme="blue" variant="outline">
+              興味を登録
+            </Button>
+          </Link>
+        </Flex>
+      </Box>
       <Footer />
     </Flex>
   );

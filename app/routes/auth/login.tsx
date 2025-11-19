@@ -1,7 +1,19 @@
-import { Button, Input } from "@chakra-ui/react";
+import {
+  Button,
+  Input,
+  Box,
+  Flex,
+  Heading,
+  VStack,
+  Checkbox,
+  Alert,
+  Text,
+  Field,
+} from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 import {
   Form,
+  Link,
   redirect,
   useActionData,
   useSearchParams,
@@ -64,7 +76,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 };
 
-export const meta = () => [{ title: "Login" }];
+export const meta = () => [{ title: "ログイン" }];
 
 export default function LoginPage() {
   const [searchParams] = useSearchParams();
@@ -82,14 +94,31 @@ export default function LoginPage() {
   }, [actionData]);
 
   return (
-    <div className="flex h-screen flex-col justify-center items-center">
-      <div className="mx-auto w-full max-w-md px-8">
-        <Form method="post" className="space-y-6">
-          <input type="hidden" name="_action" value="user-pass" />
-          <div>
-            <div className="mt-1">
+    <Flex align="center" justify="center" h="100vh" bg="gray.50">
+      <Box
+        mx="auto"
+        w="full"
+        maxW="md"
+        bg="white"
+        p={8}
+        borderRadius="lg"
+        boxShadow="lg"
+      >
+        <Heading as="h1" size="xl" textAlign="center" mb={6}>
+          ログイン
+        </Heading>
+
+        {/* React RouterのFormはそのまま使用 */}
+        <Form method="post">
+          {/* VStackでフォーム要素の間隔を管理 */}
+          <VStack gap={4}>
+            <input type="hidden" name="_action" value="user-pass" />
+
+            {/* Emailフィールド */}
+            <Field.Root invalid={!!actionData?.errors?.email}>
+              {/* <FormLabel htmlFor="email">Email address</FormLabel> */}
               <Input
-                placeholder="Email"
+                placeholder="Email address"
                 ref={emailRef}
                 id="email"
                 required
@@ -97,19 +126,16 @@ export default function LoginPage() {
                 name="email"
                 type="email"
                 autoComplete="email"
-                aria-invalid={actionData?.errors?.email ? true : undefined}
                 aria-describedby="email-error"
               />
-              {actionData?.errors?.email ? (
-                <div className="pt-1 text-red-700" id="email-error">
-                  {actionData.errors.email}
-                </div>
-              ) : null}
-            </div>
-          </div>
+              <Field.ErrorText id="email-error">
+                {actionData?.errors?.email}
+              </Field.ErrorText>
+            </Field.Root>
 
-          <div>
-            <div className="mt-1">
+            {/* Passwordフィールド */}
+            <Field.Root invalid={!!actionData?.errors?.password}>
+              {/* <FormLabel htmlFor="password">Password</FormLabel> */}
               <Input
                 placeholder="Password"
                 id="password"
@@ -117,42 +143,48 @@ export default function LoginPage() {
                 name="password"
                 type="password"
                 autoComplete="current-password"
-                aria-invalid={actionData?.errors?.password ? true : undefined}
                 aria-describedby="password-error"
               />
-              {actionData?.errors?.password ? (
-                <div className="pt-1 text-red-700" id="password-error">
-                  {actionData.errors.password}
-                </div>
-              ) : null}
-            </div>
-          </div>
+              <Field.ErrorText id="password-error">
+                {actionData?.errors?.password}
+              </Field.ErrorText>
+            </Field.Root>
 
-          <input type="hidden" name="redirectTo" value={redirectTo} />
-          {actionData?.e ? (
-            <div className=" text-red-700">{actionData.e}</div>
-          ) : null}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember"
-                name="remember"
-                type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <label
-                htmlFor="remember"
-                className="ml-2 block text-sm text-gray-900"
-              >
-                Remember me
-              </label>
-            </div>
-          </div>
-          <Button type="submit" className="w-full">
-            Log in
-          </Button>
+            <input type="hidden" name="redirectTo" value={redirectTo} />
+
+            {/* 汎用エラー表示 */}
+            {actionData?.e && (
+              <Alert.Root status="error">
+                <Alert.Indicator />
+                <Alert.Title>{actionData.e}</Alert.Title>
+              </Alert.Root>
+            )}
+
+            {/* Remember me チェックボックス */}
+            <Flex justify="space-between" w="full">
+              <Checkbox.Root id="remember" name="remember" value="on">
+                <Checkbox.HiddenInput />
+                <Checkbox.Control />
+                <Checkbox.Label>ログインを記憶する</Checkbox.Label>
+              </Checkbox.Root>
+            </Flex>
+
+            {/* ログインボタン */}
+            <Button type="submit" colorScheme="blue" w="full" size="lg">
+              ログイン
+            </Button>
+
+            <Text textAlign="center" mt={4}>
+              アカウントをお持ちでない場合
+              <Link to="/join">
+                <Text as="span" color="blue.500" ml={2}>
+                  登録
+                </Text>
+              </Link>
+            </Text>
+          </VStack>
         </Form>
-      </div>
-    </div>
+      </Box>
+    </Flex>
   );
 }

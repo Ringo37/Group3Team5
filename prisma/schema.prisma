@@ -20,8 +20,7 @@ enum Role {
 }
 
 enum Action {
-  READ
-  WRITE
+  VIEW
   DELETE
   CREATE
   UPDATE
@@ -32,12 +31,14 @@ model User {
   name      String
   email     String   @unique
   tel       String?
+  avatar    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   role      Role     @default(USER)
 
   password                Password?
-  organizations           Organization[]
+  organizations           Organization[] @relation("Organization")
+  ownedOrganizations      Organization[] @relation("OwnedOrganization")
   accessLogs              AccessLog[]
   knowhows                Knowhow[]
   ndaAgreementsAsProvider NdaAgreement[] @relation("Provider")
@@ -45,6 +46,7 @@ model User {
   Farm                    Farm[]
   WorkLog                 WorkLog[]
   InterestTag             InterestTag[]
+  accessibleKnowhows      Knowhow[]      @relation("KnowhowAccess")
 }
 
 model Password {
@@ -55,10 +57,10 @@ model Password {
 }
 
 model InterestTag {
-  id      String    @id @default(cuid())
-  tag     String    @unique
-  user    User[]
-  knowhow Knowhow[]
+  id       String    @id @default(cuid())
+  tag      String    @unique
+  users    User[]
+  knowhows Knowhow[]
 }
 
 model Organization {
@@ -66,20 +68,30 @@ model Organization {
   name   String
   detail String?
 
-  users User[]
+  owners User[] @relation("OwnedOrganization")
+  users  User[] @relation("Organization")
+}
+
+model Crop {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  Farm Farm[]
 }
 
 model Farm {
   id               Int    @id @default(autoincrement())
+  name             String
   region           String
   areaHa           Float
-  farmType         String
-  mainCrops        String
   seasonalCalendar String
 
-  user     User[]
+  users    User[]
   knowhows Knowhow[]
-  WorkLog  WorkLog[]
+  WorkLogs WorkLog[]
+  mainCrop Crop      @relation(fields: [cropId], references: [id])
+  cropId   Int
+
+  @@index([cropId])
 }
 
 enum Visibility {
@@ -100,10 +112,14 @@ model Knowhow {
   userId     String
   visibility Visibility
 
-  farm       Farm          @relation(fields: [farmId], references: [id])
-  user       User          @relation(fields: [userId], references: [id])
-  accessLogs AccessLog[]
-  tags       InterestTag[]
+  farm            Farm          @relation(fields: [farmId], references: [id])
+  user            User          @relation(fields: [userId], references: [id])
+  accessibleUsers User[]        @relation("KnowhowAccess")
+  accessLogs      AccessLog[]
+  tags            InterestTag[]
+
+  @@index([farmId])
+  @@index([userId])
 }
 
 model AccessLog {
@@ -115,6 +131,9 @@ model AccessLog {
 
   knowhow Knowhow @relation(fields: [knowhowId], references: [id])
   user    User    @relation(fields: [userId], references: [id])
+
+  @@index([knowhowId])
+  @@index([userId])
 }
 
 model NdaAgreement {
@@ -126,6 +145,9 @@ model NdaAgreement {
 
   provider User @relation("Provider", fields: [providerId], references: [id])
   learner  User @relation("Learner", fields: [learnerId], references: [id])
+
+  @@index([providerId])
+  @@index([learnerId])
 }
 
 enum WeatherCondition {
@@ -153,4 +175,8 @@ model WorkLog {
   farm   Farm   @relation(fields: [farmId], references: [id])
   userId String
   user   User   @relation(fields: [userId], references: [id])
+
+  @@index([farmId])
+  @@index([userId])
+  @@index([date])
 }
