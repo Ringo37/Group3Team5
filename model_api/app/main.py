@@ -37,17 +37,23 @@ def extract_keywords_api(request: TextRequest):
 @app.post("/recommend", response_model=RecommendResponse)
 def recommend_api(request: RecommendRequest):
     # タグ集合作成（リスト前提で抜き出し）
-    all_tags = list(set(chain.from_iterable(
-        [k.tags for k in request.knowhows] +
-        [l.interest_tags for l in request.learners]
-    )))
-    learner = next((le for le in request.learners if le.name == request.user_name), None)
+    all_tags = list(
+        set(
+            chain.from_iterable(
+                [m.tags for m in request.knowhows]
+                + [n.interest_tags for n in request.learners]
+            )
+        )
+    )
+    learner = next(
+        (le for le in request.learners if le.name == request.user_name), None
+    )
     if learner is None:
         return {"recommendations": []}
     result = recommend(
         [k.dict() for k in request.knowhows],
         learner.dict(),
         all_tags,
-        top_n=request.top_n
+        top_n=request.top_n,
     )
     return {"recommendations": result}
