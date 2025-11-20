@@ -28,13 +28,13 @@ ExtractKeywordsResponse = Union[ExtractKeywordsSuccess, ExtractKeywordsError]
 class KnowHow(BaseModel):
     id: int
     title: str
-    tags: str
+    tags: List[str]        # ← str→List[str]に修正
 
 
 class Learner(BaseModel):
     user_id: int
     name: str
-    interest_tags: str
+    interest_tags: List[str]   # ← str→List[str]に修正
 
 
 class RecommendRequest(BaseModel):
