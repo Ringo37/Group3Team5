@@ -8,6 +8,8 @@ from .schemas import (
 from .modules.keyword import extract_keywords_core
 from .modules.recommend import recommend
 
+from itertools import chain
+
 
 app = FastAPI()
 
@@ -34,13 +36,12 @@ def extract_keywords_api(request: TextRequest):
 
 @app.post("/recommend", response_model=RecommendResponse)
 def recommend_api(request: RecommendRequest):
-    # 1. タグ集合作成
+    # タグ集合作成（リスト前提で抜き出し）
     all_tags = list(
         set(
-            sum(
-                [m.tags.split(",") for m in request.knowhows]
-                + [n.interest_tags.split(",") for n in request.learners],
-                [],
+            chain.from_iterable(
+                [m.tags for m in request.knowhows]
+                + [n.interest_tags for n in request.learners]
             )
         )
     )

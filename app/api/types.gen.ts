@@ -71,7 +71,7 @@ export type KnowHow = {
   /**
    * Tags
    */
-  tags: string;
+  tags: Array<string>;
 };
 
 /**
@@ -89,7 +89,7 @@ export type Learner = {
   /**
    * Interest Tags
    */
-  interest_tags: string;
+  interest_tags: Array<string>;
 };
 
 /**
