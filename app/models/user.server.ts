@@ -1,4 +1,4 @@
-import { Role, type Password, type User } from "@prisma/client";
+import { Prisma, Role, type Password, type User } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 import { prisma } from "~/lib/prisma";
@@ -17,12 +17,19 @@ export async function addInterestTag(id: User["id"], tags: string[]) {
   });
 }
 
+export type UserWithAvatar = Prisma.UserGetPayload<{
+  include: { avatar: true };
+}>;
+
 export async function getUserById(id: User["id"]) {
-  return prisma.user.findUnique({ where: { id } });
+  return prisma.user.findUnique({ where: { id }, include: { avatar: true } });
 }
 
 export async function getUserByEmail(email: User["email"]) {
-  return prisma.user.findUnique({ where: { email } });
+  return prisma.user.findUnique({
+    where: { email },
+    include: { avatar: true },
+  });
 }
 
 export async function createUser(
