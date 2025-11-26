@@ -150,7 +150,7 @@ export default function Mypage() {
             <HStack gap={8} align="start">
               <Avatar.Root size="2xl">
                 <Avatar.Fallback name={user.name} />
-                <Avatar.Image src={user.avatar ?? undefined} />
+                <Avatar.Image src={user.avatar?.url ?? undefined} />
               </Avatar.Root>
               <VStack gap={4} align="stretch" w="100%">
                 <InfoRow

@@ -10,15 +10,12 @@ import {
   AvatarGroup,
   Icon,
 } from "@chakra-ui/react";
-import type { User } from "@prisma/client";
 import { Home, SquarePen, Search, Users, BookOpen } from "lucide-react";
 import { Form, Link } from "react-router";
 
-interface HeaderUser extends User {
-  image?: string | null;
-}
+import type { UserWithAvatar } from "~/models/user.server";
 
-export default function Header({ user }: { user: HeaderUser | null }) {
+export default function Header({ user }: { user: UserWithAvatar | null }) {
   return (
     <Flex
       as="header"
@@ -84,7 +81,7 @@ export default function Header({ user }: { user: HeaderUser | null }) {
                   <AvatarGroup>
                     <Avatar.Root size="sm">
                       <Avatar.Image
-                        src={user.image || undefined}
+                        src={user.avatar?.url || undefined}
                         alt={user.name || "User Avatar"}
                       />
                       <Avatar.Fallback>
