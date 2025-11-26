@@ -95,12 +95,17 @@ export default function Header({ user }: { user: HeaderUser | null }) {
                 </Menu.Trigger>
                 <Menu.Positioner>
                   <Menu.Content>
-                    <Link to={`/profile/${user.id}`}>
+                    <Link to={`/mypage`}>
                       <Menu.Item value="マイページ">マイページ</Menu.Item>
                     </Link>
                     <Link to="/settings">
                       <Menu.Item value="設定">設定</Menu.Item>
                     </Link>
+                    {user.role === "ADMIN" && (
+                      <Link to={`/admin`}>
+                        <Menu.Item value="管理画面">管理画面</Menu.Item>
+                      </Link>
+                    )}
                     <Menu.Separator />
                     <Form action="/logout" method="post">
                       <Button
