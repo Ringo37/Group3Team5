@@ -1,4 +1,4 @@
-import { Action, type Visibility } from "@prisma/client";
+import { Action, Prisma, Visibility } from "@prisma/client";
 
 import { prisma } from "~/lib/prisma";
 
@@ -10,6 +10,10 @@ interface CreateKnowhowProps {
   userId: string;
   visibility: Visibility;
 }
+
+export type KnowhowWithCover = Prisma.KnowhowGetPayload<{
+  include: { cover: true };
+}>;
 
 export async function createKnowhow({
   title,
@@ -86,5 +90,23 @@ export async function deleteKnowhowById(id: number, userId: string) {
   await prisma.accessLog.create({
     data: { userId, knowhowId: id, action: Action.DELETE },
   });
-  return prisma.knowhow.delete({ where: { id } });
+  return prisma.knowhow.delete({
+    where: { id, visibility: Visibility.PUBLIC },
+  });
+}
+
+export async function getKnowHows(page = 1, perPage = 6) {
+  return prisma.knowhow.findMany({
+    skip: (page - 1) * perPage,
+    take: perPage,
+    where: { visibility: Visibility.PUBLIC },
+    include: { cover: true },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function getKnowHowsCount() {
+  return prisma.knowhow.count({
+    where: { visibility: Visibility.PUBLIC },
+  });
 }

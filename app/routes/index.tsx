@@ -1,6 +1,5 @@
 import {
   Button,
-  HStack,
   Heading,
   Text,
   Box,
@@ -10,9 +9,11 @@ import {
   SimpleGrid,
 } from "@chakra-ui/react";
 import { Search } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useLoaderData } from "react-router";
 
 import Footer from "~/components/fotter";
+import { PostCard } from "~/components/postCard";
+import { getKnowHows } from "~/models/knowhow.server";
 export function meta() {
   return [
     { title: "農ハウマッチング - 農家と未来をつなぐ" },
@@ -23,46 +24,13 @@ export function meta() {
   ];
 }
 
-const PostCard = () => {
-  return (
-    <Box
-      bg="white"
-      borderWidth="1px"
-      borderColor="gray.200"
-      borderRadius="lg"
-      overflow="hidden"
-      boxShadow="sm"
-      _hover={{ boxShadow: "md", transform: "translateY(-4px)" }}
-      transition="all 0.2s"
-    >
-      <Image
-        src="https://via.placeholder.com/400x250"
-        alt="投稿の画像"
-        height="200px"
-        width="100%"
-        objectFit="cover"
-      />
-      <Box p={5}>
-        <Text fontWeight="bold" fontSize="lg" lineClamp={2} mb={2}>
-          ここに投稿のタイトルが入ります
-        </Text>
-        <Text fontSize="sm" color="gray.600" lineClamp={3} mb={4}>
-          これは投稿内容のプレビューです。最新のノウハウや農業日誌の一部がここに表示されます。
-        </Text>
-        <HStack justify="space-between">
-          <Text fontSize="xs" color="gray.500">
-            2025年11月11日
-          </Text>
-          <Text fontSize="xs" color="teal.500" fontWeight="medium">
-            カテゴリ名
-          </Text>
-        </HStack>
-      </Box>
-    </Box>
-  );
-};
+export async function loader() {
+  const knowhows = await getKnowHows();
+  return { knowhows };
+}
 
 export default function Index() {
+  const { knowhows } = useLoaderData<typeof loader>();
   return (
     <Flex direction="column" minH="100vh" bg="#fdf8f3">
       <Box position="relative" height="60vh" width="100%" overflow="hidden">
@@ -175,12 +143,9 @@ export default function Index() {
             </Flex>
 
             <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={8}>
-              <PostCard />
-              <PostCard />
-              <PostCard />
-              <PostCard />
-              <PostCard />
-              <PostCard />
+              {knowhows.map((knowhow) => (
+                <PostCard key={knowhow.id} knowhow={knowhow} />
+              ))}
             </SimpleGrid>
           </Box>
 
