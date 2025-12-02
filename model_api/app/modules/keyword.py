@@ -4,6 +4,7 @@ from typing import List, Dict, Any, cast
 
 tokenizer = Tokenizer()
 
+
 def extract_keywords_core(text: str, top_n: int) -> List[Dict[str, Any]]:
     nouns: List[str] = []
 
