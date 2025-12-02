@@ -1,6 +1,6 @@
 import { redirect, type ActionFunctionArgs } from "react-router";
 
-import { prisma } from "~/lib/prisma.server";
+import { prisma } from "~/lib/prisma";
 import { requireUserId } from "~/services/auth.server";
 
 export async function action({ request }: ActionFunctionArgs) {

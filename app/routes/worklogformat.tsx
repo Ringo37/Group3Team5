@@ -22,8 +22,8 @@ import {
   extractKeywordsApiExtractKeywordsPost,
   type ExtractKeywordsSuccess,
 } from "~/api";
+import { farmKeyword } from "~/data/farmKeyword";
 import { apiClient } from "~/lib/apiClient";
-import { farmKeyword } from "~/lib/farmKeyword";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();

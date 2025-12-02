@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { Link, useLoaderData, type LoaderFunctionArgs } from "react-router";
 
-import { prisma } from "~/lib/prisma.server";
+import { prisma } from "~/lib/prisma";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.id) throw new Response("IDが必要です", { status: 400 });

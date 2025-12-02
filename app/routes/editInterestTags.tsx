@@ -13,24 +13,9 @@ import {
   type LoaderFunctionArgs,
 } from "react-router";
 
+import { farmKeyword } from "~/data/farmKeyword";
 import { addInterestTag } from "~/models/user.server";
 import { requireUser } from "~/services/auth.server";
-
-// タグの候補リスト
-const CANDIDATE_TAGS = [
-  "スマート農業",
-  "AI",
-  "初心者",
-  "センサー",
-  "IoT",
-  "市場分析",
-  "害虫対策",
-  "ドローン",
-  "有機栽培",
-  "経営管理",
-  "自動化",
-  "ロボット",
-];
 
 export async function loader({ request }: LoaderFunctionArgs) {
   await requireUser(request);
@@ -74,7 +59,7 @@ export default function EditInterestTagsPage() {
           >
             {/* 修正点1: spacing -> gap に変更 */}
             <SimpleGrid columns={2} gap={3}>
-              {CANDIDATE_TAGS.map((tag) => (
+              {Array.from(farmKeyword).map((tag) => (
                 // 修正点2: v3用のカスタムCheckboxコンポーネントを使用
                 <CustomCheckbox key={tag} value={tag} label={tag} />
               ))}
