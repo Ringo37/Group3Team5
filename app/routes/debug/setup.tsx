@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router";
 
-import { prisma } from "~/lib/prisma.server";
+import { prisma } from "~/lib/prisma";
 // LoaderFunctionArgs を削除
 
 export const loader = async () => {

@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { useLoaderData, Link } from "react-router";
 
-import { prisma } from "~/lib/prisma.server";
+import { prisma } from "~/lib/prisma";
 
 export const loader = async () => {
   try {
