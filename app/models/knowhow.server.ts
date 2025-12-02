@@ -95,11 +95,18 @@ export async function deleteKnowhowById(id: number, userId: string) {
   });
 }
 
-export async function getKnowHows(num = 6) {
+export async function getKnowHows(page = 1, perPage = 6) {
   return prisma.knowhow.findMany({
-    take: num,
+    skip: (page - 1) * perPage,
+    take: perPage,
     where: { visibility: Visibility.PUBLIC },
     include: { cover: true },
     orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function getKnowHowsCount() {
+  return prisma.knowhow.count({
+    where: { visibility: Visibility.PUBLIC },
   });
 }

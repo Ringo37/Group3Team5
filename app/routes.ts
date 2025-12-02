@@ -23,6 +23,7 @@ export default [
     route("mypage", "routes/user/mypage.tsx"),
     route("settings", "routes/user/settings.tsx"),
     route("edit-interest-tags", "routes/editInterestTags.tsx"),
+    route("explore", "routes/knowhow/explore.tsx"),
   ]),
   ...prefix("admin", [
     layout("routes/admin/layout.tsx", [
