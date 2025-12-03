@@ -24,6 +24,8 @@ export default [
     route("settings", "routes/user/settings.tsx"),
     route("edit-interest-tags", "routes/editInterestTags.tsx"),
     route("explore", "routes/knowhow/explore.tsx"),
+    route("knowhow", "routes/knowhow/index.ts"),
+    route("knowhow/:id", "routes/knowhow/detail.tsx"),
   ]),
   ...prefix("admin", [
     layout("routes/admin/layout.tsx", [
