@@ -7,6 +7,7 @@ import {
   Flex,
   Input,
   SimpleGrid,
+  VStack,
 } from "@chakra-ui/react";
 import { Search } from "lucide-react";
 import { Link, useLoaderData } from "react-router";
@@ -14,6 +15,7 @@ import { Link, useLoaderData } from "react-router";
 import Footer from "~/components/fotter";
 import { PostCard } from "~/components/postCard";
 import { getKnowHows } from "~/models/knowhow.server";
+
 export function meta() {
   return [
     { title: "農ハウマッチング - 農家と未来をつなぐ" },
@@ -53,9 +55,10 @@ export default function Index() {
           left={0}
           width="100%"
           height="100%"
-          zIndex={0}
+          zIndex={1}
           style={{
-            background: "rgba(0, 0, 0, 0.5)",
+            background:
+              "linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7))",
           }}
         />
 
@@ -64,84 +67,94 @@ export default function Index() {
           height="100%"
           alignItems="center"
           justifyContent="center"
+          direction="column"
           p={6}
-          zIndex={1}
+          zIndex={2}
+          textAlign="center"
+          gap={8}
         >
-          <Box
-            position="relative"
-            width={{ base: "90%", md: "60%" }}
-            maxW="600px"
-          >
+          <VStack gap={4} maxW="4xl">
+            <Text
+              color="green.300"
+              fontWeight="bold"
+              fontSize={{ base: "lg", md: "2xl" }}
+              letterSpacing="0.2em"
+              textShadow="0px 2px 4px rgba(0,0,0,0.8)"
+            >
+              - 農家と未来をつなぐ -
+            </Text>
+            <Heading
+              as="h1"
+              color="white"
+              fontWeight="extrabold"
+              fontSize={{ base: "2xl", md: "4xl", lg: "5xl" }}
+              lineHeight="1.4"
+              textShadow="0px 2px 8px rgba(0,0,0,0.8)"
+            >
+              農家とハウスをマッチングして
+              <br />
+              未来の農業を支えるプラットフォーム
+            </Heading>
+          </VStack>
+
+          <Box width={{ base: "95%", md: "600px" }} position="relative">
             <Box
               position="absolute"
               top="50%"
-              style={{ transform: "translateY(-50%)", left: "1.2rem" }}
+              left="1.5rem"
+              transform="translateY(-50%)"
               zIndex={2}
               pointerEvents="none"
             >
-              <Search size={20} color="gray" />
+              <Search size={20} color="#718096" />
             </Box>
             <Input
               type="search"
               placeholder="キーワードでノウハウを検索..."
               borderRadius="full"
-              bg="gray.50"
-              _dark={{ bg: "gray.700", borderColor: "gray.600" }}
-              borderColor="gray.300"
-              height="3.5rem"
-              boxShadow="lg"
-              style={{ paddingLeft: "3.5rem" }}
+              bg="white"
+              color="gray.800"
+              _placeholder={{ color: "gray.500" }}
+              border="none"
+              height={{ base: "3rem", md: "3rem" }}
+              fontSize="lg"
+              pl="3.5rem"
+              boxShadow="0 4px 20px rgba(0, 0, 0, 0.3)"
+              _focus={{
+                boxShadow: "0 0 0 3px rgba(0, 146, 69, 0.4)",
+                outline: "none",
+              }}
             />
           </Box>
         </Flex>
       </Box>
 
       <Box flex="1" width="100%" pb={20}>
-        <Box maxW="7xl" mx="auto" px={{ base: 6, md: 10 }}>
-          <Box py={16} textAlign="center">
-            <Text
-              color="#009245"
-              fontWeight="extrabold"
-              fontSize={{ base: "xl", md: "3xl" }}
-              mb={3}
-              style={{ letterSpacing: "0.15em" }}
+        <Box
+          mx="auto"
+          maxWidth="7xl"
+          width={{ base: "95%", md: "90%", lg: "70%" }}
+          px={0}
+        >
+          <Box mt={16} mb={10}>
+            <Box
+              borderBottomWidth="1px"
+              borderColor="gray.300"
+              mb={10}
+              width="100%"
             >
-              - 農家と未来をつなぐ -
-            </Text>
-            <Heading
-              fontSize={{ base: "xl", md: "3xl", lg: "4xl" }}
-              as="h2"
-              size="xl"
-              color="gray.700"
-              lineHeight="1.6"
-            >
-              農家とハウスをマッチングして
-              <br />
-              未来の農業を支えるプラットフォーム
-            </Heading>
-          </Box>
-
-          <Box mb={10}>
-            <Flex justify="center" mb={10}>
               <Heading
                 as="h3"
                 size="lg"
-                color="#009245"
-                bg="white"
-                px={10}
-                py={3}
-                borderRadius="full"
-                boxShadow="sm"
-                textAlign="center"
-                style={{
-                  border: "1px solid #e2e8f0",
-                  display: "inline-block",
-                }}
+                display="inline-block"
+                pb={2}
+                borderBottomWidth="3px"
+                borderColor="#009245"
+                marginBottom="-2px"
               >
                 最新の投稿
               </Heading>
-            </Flex>
-
+            </Box>
             <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={8}>
               {knowhows.map((knowhow) => (
                 <PostCard key={knowhow.id} knowhow={knowhow} />
@@ -166,6 +179,7 @@ export default function Index() {
           </Flex>
         </Box>
       </Box>
+
       <Box mb={8} p={4} bg="gray.50" borderRadius="md" textAlign="center">
         <Text fontSize="sm" color="gray.500" mb={4}>
           ※ 開発用リンク（後で削除予定）
