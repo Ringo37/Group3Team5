@@ -105,6 +105,12 @@ export async function getKnowHows(page = 1, perPage = 6) {
   });
 }
 
+export async function getKnowHowsByUserId(userId: string) {
+  return prisma.knowhow.findMany({
+    where: { userId },
+  });
+}
+
 export async function getKnowHowsCount() {
   return prisma.knowhow.count({
     where: { visibility: Visibility.PUBLIC },
