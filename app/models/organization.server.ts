@@ -65,3 +65,19 @@ export async function getOrganizationsByUserId(id: string) {
 export async function deleteOrganizationById(id: string) {
   return prisma.organization.delete({ where: { id } });
 }
+
+export async function getOrganizations(page = 1, perPage = 10) {
+  return prisma.organization.findMany({
+    skip: (page - 1) * perPage,
+    take: perPage,
+    orderBy: {
+      users: {
+        _count: "desc",
+      },
+    },
+  });
+}
+
+export async function getOrganizationsCount() {
+  return prisma.organization.count();
+}
