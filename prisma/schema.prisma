@@ -72,6 +72,7 @@ model Organization {
 
   owners User[] @relation("OwnedOrganization")
   users  User[] @relation("Organization")
+  farms  Farm[]
 }
 
 model Crop {
@@ -87,11 +88,13 @@ model Farm {
   areaHa           Float
   seasonalCalendar String
 
-  users    User[]
-  knowhows Knowhow[]
-  WorkLogs WorkLog[]
-  mainCrop Crop      @relation(fields: [cropId], references: [id])
-  cropId   Int
+  users          User[]
+  knowhows       Knowhow[]
+  orgnization    Organization? @relation(fields: [organizationId], references: [id])
+  WorkLogs       WorkLog[]
+  mainCrop       Crop          @relation(fields: [cropId], references: [id])
+  cropId         Int
+  organizationId String?
 
   @@index([cropId])
 }

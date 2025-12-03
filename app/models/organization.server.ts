@@ -56,6 +56,12 @@ export async function getOrganizationById(id: string) {
   return prisma.organization.findUnique({ where: { id } });
 }
 
+export async function getOrganizationsByUserId(id: string) {
+  return prisma.organization.findMany({
+    where: { OR: [{ users: { some: { id } } }, { owners: { some: { id } } }] },
+  });
+}
+
 export async function deleteOrganizationById(id: string) {
   return prisma.organization.delete({ where: { id } });
 }

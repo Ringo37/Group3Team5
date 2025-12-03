@@ -14,7 +14,7 @@ export default [
     index("routes/index.tsx"),
     route("sample", "routes/sample.tsx"),
     route("debug/setup", "routes/debug/setup.tsx"),
-    route("worklogformat", "routes/worklogformat.tsx"),
+    route("post", "routes/worklogformat.tsx"),
     route("worklog", "routes/worklog/index.tsx"),
     route("worklogformat/submit", "routes/worklogformat.submit.ts"),
     route("worklog/list", "routes/worklog/list.tsx"),
@@ -26,6 +26,7 @@ export default [
     route("explore", "routes/knowhow/explore.tsx"),
     route("knowhow", "routes/knowhow/index.ts"),
     route("knowhow/:id", "routes/knowhow/detail.tsx"),
+    route("register", "routes/organization/register.tsx"),
   ]),
   ...prefix("admin", [
     layout("routes/admin/layout.tsx", [

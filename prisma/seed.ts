@@ -25,6 +25,28 @@ async function seed() {
   const crop = await prisma.crop.create({
     data: { name: "米" },
   });
+  const org1 = await prisma.organization.create({
+    data: {
+      name: "テスト組織1",
+      detail: "テスト組織の詳細",
+      owners: {
+        connect: {
+          id: user.id,
+        },
+      },
+    },
+  });
+  await prisma.organization.create({
+    data: {
+      name: "テスト組織2",
+      detail: "テスト組織の詳細",
+      owners: {
+        connect: {
+          id: user.id,
+        },
+      },
+    },
+  });
   const farm = await prisma.farm.create({
     data: {
       name: "テストファーム",
@@ -37,6 +59,7 @@ async function seed() {
           id: user.id,
         },
       },
+      organizationId: org1.id,
     },
   });
   const cover = await prisma.file.create({

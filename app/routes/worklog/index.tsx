@@ -41,7 +41,7 @@ export default function WorkLogIndex() {
           農ハウマッチング
         </Heading>
 
-        <Link to="/worklogformat">
+        <Link to="/post">
           <Button
             bg="teal.400"
             color="white"
