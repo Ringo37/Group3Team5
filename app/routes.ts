@@ -15,7 +15,10 @@ export default [
     route("sample", "routes/sample.tsx"),
     route("worklogformat", "routes/worklogformat/index.tsx"),
     route("worklogformat/worklogpost", "routes/worklogformat/worklogpost.tsx"),
-    route("worklogformat/worklogpost/submit", "routes/worklogformat/worklogpost.submit.ts"),
+    route(
+      "worklogformat/worklogpost/submit",
+      "routes/worklogformat/worklogpost.submit.ts",
+    ),
     route("worklogformat/list", "routes/worklogformat/list.tsx"),
     route("worklogformat/complete", "routes/worklogformat/complete.tsx"),
     route("worklogformat/:id", "routes/worklogformat/detail.tsx"),
@@ -24,6 +27,9 @@ export default [
     route("settings", "routes/user/settings.tsx"),
     route("edit-interest-tags", "routes/editInterestTags.tsx"),
     route("explore", "routes/knowhow/explore.tsx"),
+    route("knowhow", "routes/knowhow/index.ts"),
+    route("knowhow/:id", "routes/knowhow/detail.tsx"),
+    route("organization/register", "routes/organization/register.tsx"),
   ]),
   ...prefix("admin", [
     layout("routes/admin/layout.tsx", [

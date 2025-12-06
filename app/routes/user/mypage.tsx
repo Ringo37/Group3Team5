@@ -23,12 +23,17 @@ import {
   type LoaderFunctionArgs,
 } from "react-router";
 
+import { getOrganizationsByUserId } from "~/models/organization.server";
 import { updateUser } from "~/models/user.server";
 import { getUserId, requireUser } from "~/services/auth.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await requireUser(request);
-  return { user };
+  const organizations = await getOrganizationsByUserId(user.id);
+  if (!user) {
+    return redirect("/login");
+  }
+  return { user, organizations };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -98,7 +103,8 @@ const InfoRow = ({
 };
 
 export default function Mypage() {
-  const { user } = useLoaderData<typeof loader>();
+  const { user, organizations } = useLoaderData<typeof loader>();
+  console.log(organizations);
   const actionData = useActionData<typeof action>();
   const [isEditing, setIsEditing] = useState(!!actionData?.errors);
   const [data, setData] = useState({

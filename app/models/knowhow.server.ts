@@ -83,7 +83,7 @@ export async function getKnowhowById(id: number, userId: string) {
   await prisma.accessLog.create({
     data: { userId, knowhowId: id, action: Action.VIEW },
   });
-  return prisma.knowhow.findUnique({ where: { id } });
+  return prisma.knowhow.findUnique({ where: { id }, include: { cover: true } });
 }
 
 export async function deleteKnowhowById(id: number, userId: string) {
@@ -102,6 +102,12 @@ export async function getKnowHows(page = 1, perPage = 6) {
     where: { visibility: Visibility.PUBLIC },
     include: { cover: true },
     orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function getKnowHowsByUserId(userId: string) {
+  return prisma.knowhow.findMany({
+    where: { userId },
   });
 }
 
