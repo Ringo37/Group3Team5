@@ -9,73 +9,90 @@ import {
   InputGroup,
   AvatarGroup,
   Icon,
+  Image,
 } from "@chakra-ui/react";
 import { Home, SquarePen, Search, Users, BookOpen } from "lucide-react";
-import { Form, Link } from "react-router";
+import { Form, Link, useLocation } from "react-router";
 
 import type { UserWithAvatar } from "~/models/user.server";
 
 export default function Header({ user }: { user: UserWithAvatar | null }) {
+  const location = useLocation();
+  const activeColor = "#009245";
+
+  const getLinkStyle = (path: string) => {
+    const isActive = location.pathname === path;
+    return {
+      borderBottomWidth: "4px",
+      borderColor: isActive ? activeColor : "transparent",
+      color: isActive ? activeColor : "#009245",
+
+      paddingBottom: "14px",
+      marginBottom: "-1.5px",
+
+      fontWeight: "medium" as const,
+      fontSize: "md",
+      transition: "all 0.2s",
+      _hover: { color: "#266836" },
+    };
+  };
+
   return (
     <Flex
       as="header"
-      maxWidth="7xl"
-      mx="auto"
-      width="100%"
       direction="column"
+      width="100%"
       borderBottomWidth="1px"
       borderColor="gray.200"
+      bg="white"
       _dark={{
         borderColor: "gray.700",
+        bg: "gray.800",
+        color: "whiteAlpha.900",
       }}
+      color="gray.800"
     >
       <Flex
-        align="center"
-        justify="space-between"
-        wrap="wrap"
-        paddingY={4}
-        paddingX={6}
-        bg="white"
-        _dark={{
-          bg: "gray.800",
-          color: "whiteAlpha.900",
-        }}
-        color="gray.800"
-        width="100%"
-        gap={4}
+        direction="column"
+        maxWidth="7xl"
+        mx="auto"
+        width={{ base: "95%", md: "90%", lg: "70%" }}
       >
-        {/* ロゴ */}
-        <HStack>
-          <Link to="/">
-            <Box fontSize="3xl" fontWeight="bold" color="teal.500">
-              農ハウ(仮)
-            </Box>
-          </Link>
-        </HStack>
-
-        <Box
-          flex={1}
-          minWidth="200px"
-          mx={8}
-          display={{ base: "none", md: "block" }}
+        <Flex
+          align="center"
+          justify="space-between"
+          paddingTop={4}
+          paddingBottom={2}
+          width="100%"
+          gap={4}
+          px={{ base: 3, md: 6 }}
         >
-          {/*
-          <InputGroup startElement={<Search size={16} color="gray" />}>
-            <Input
-              type="search"
-              placeholder="キーワードでノウハウを検索..."
-              borderRadius="full"
-              bg="gray.50"
-              _dark={{ bg: "gray.700", borderColor: "gray.600" }}
-              borderColor="gray.300"
-              pl={10}
-            />
-          </InputGroup>*/}
-        </Box>
+          <HStack>
+            <Link to="/">
+              <HStack gap={3} align="center">
+                <Image
+                  src="/favicon.svg"
+                  alt="農ハウ ロゴ"
+                  height="75px"
+                  width="auto"
+                  objectFit="contain"
+                />
+                <Box fontSize="3xl" fontWeight="bold" color="#009570">
+                  農ハウマッチング
+                </Box>
+              </HStack>
+            </Link>
+          </HStack>
 
-        <HStack align="center">
-          {user ? (
-            <>
+          <Box
+            flex={1}
+            minWidth="200px"
+            mx={8}
+            display={{ base: "none", md: "block" }}
+          ></Box>
+
+          <HStack align="center">
+            {user ? (
               <Menu.Root>
                 <Menu.Trigger _focus={{ borderRadius: "full" }}>
                   <AvatarGroup>
@@ -120,142 +137,115 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
                   </Menu.Content>
                 </Menu.Positioner>
               </Menu.Root>
-            </>
-          ) : (
-            <HStack>
-              <Link to="/login">
-                <Button
-                  bg="#FF7B00"
-                  color="white"
-                  borderRadius="full"
-                  _hover={{
-                    bg: "#E66F00",
-                  }}
-                >
-                  ログイン
-                </Button>
-              </Link>
-              <Link to="/signup">
-                <Button
-                  bg="#009245"
-                  color="white"
-                  borderRadius="full"
-                  _hover={{
-                    bg: "#007A3A",
-                  }}
-                >
-                  新規登録
-                </Button>
-              </Link>
-            </HStack>
-          )}
-        </HStack>
+            ) : (
+              <HStack>
+                <Link to="/login">
+                  <Button
+                    bg="#FF7B00"
+                    color="white"
+                    borderRadius="full"
+                    _hover={{ bg: "#E66F00" }}
+                  >
+                    ログイン
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button
+                    bg="#009245"
+                    color="white"
+                    borderRadius="full"
+                    _hover={{ bg: "#007A3A" }}
+                  >
+                    新規登録
+                  </Button>
+                </Link>
+              </HStack>
+            )}
+          </HStack>
 
-        <Box
-          flex={1}
-          minWidth={{ base: "200px", md: "200px" }}
-          width={{ base: "full", md: "auto" }}
-          mx={0}
-          display={{ base: "block", md: "none" }}
-        >
-          <InputGroup startElement={<Search size={16} color="gray" />}>
-            <Input
-              type="search"
-              placeholder="キーワードでノウハウを検索..."
-              borderRadius="full"
-              bg="gray.50"
-              _dark={{ bg: "gray.700", borderColor: "gray.600" }}
-              borderColor="gray.300"
-              pl={10}
-            />
-          </InputGroup>
-        </Box>
-      </Flex>
+          {/* スマホ用検索バー */}
+          <Box
+            flex={1}
+            minWidth={{ base: "200px", md: "200px" }}
+            width={{ base: "full", md: "auto" }}
+            mx={0}
+            display={{ base: "block", md: "none" }}
+          >
+            <InputGroup startElement={<Search size={16} color="gray" />}>
+              <Input
+                type="search"
+                placeholder="キーワード..."
+                borderRadius="full"
+                bg="gray.50"
+                _dark={{ bg: "gray.700", borderColor: "gray.600" }}
+                borderColor="gray.300"
+                pl={10}
+              />
+            </InputGroup>
+          </Box>
+        </Flex>
 
-      <Flex
-        as="nav"
-        align="center"
-        justify="center"
-        width="100%"
-        paddingY={3}
-        paddingX={6}
-        bg="transparent"
-        _dark={{
-          bg: "gray.800",
-        }}
-      >
-        <HStack gap={10}>
-          <Link to="/">
-            <HStack
-              as="span"
-              gap={2}
-              align="center"
-              fontSize="2xl"
-              fontWeight="medium"
-              color="#009245"
-              _hover={{ color: "#266836" }}
-            >
-              <Icon as={Home} boxSize={6} />
-              <span>ホーム</span>
-            </HStack>
-          </Link>
-          <Link to="/post">
-            <HStack
-              as="span"
-              gap={2}
-              align="center"
-              fontSize="2xl"
-              fontWeight="medium"
-              color="#009245"
-              _hover={{ color: "#266836" }}
-            >
-              <Icon as={SquarePen} boxSize={6} />
-              <span>ノウハウを投稿する</span>
-            </HStack>
-          </Link>
-          <Link to="/explore">
-            <HStack
-              as="span"
-              gap={2}
-              align="center"
-              fontSize="2xl"
-              fontWeight="medium"
-              color="#009245"
-              _hover={{ color: "#266836" }}
-            >
-              <Icon as={Search} boxSize={6} />
-              <span>ノウハウを探す</span>
-            </HStack>
-          </Link>
-          <Link to="/community">
-            <HStack
-              as="span"
-              gap={2}
-              align="center"
-              fontSize="2xl"
-              fontWeight="medium"
-              color="#009245"
-              _hover={{ color: "#266836" }}
-            >
-              <Icon as={Users} boxSize={6} />
-              <span>コミュニティ</span>
-            </HStack>
-          </Link>
-          <Link to="/guide">
-            <HStack
-              as="span"
-              gap={2}
-              align="center"
-              fontSize="2xl"
-              fontWeight="medium"
-              color="#009245"
-              _hover={{ color: "#266836" }}
-            >
-              <Icon as={BookOpen} boxSize={6} />
-              <span>ご利用ガイド</span>
-            </HStack>
-          </Link>
-        </HStack>
+        {/* === 下段: ナビゲーション === */}
+        {/* コンテナ自体にはpaddingYをつけない（リンク側のpaddingで高さを稼ぐため） */}
+        <Flex as="nav" align="center" justify="center" width="100%">
+          {/* justify="center" で中央揃えに戻し、gapで間隔を調整 */}
+          <HStack gap={{ base: 4, md: 8, lg: 10 }}>
+            <Link to="/">
+              <HStack as="span" gap={2} align="center" {...getLinkStyle("/")}>
+                <Icon as={Home} boxSize={6} />
+                <span style={{ whiteSpace: "nowrap" }}>ホーム</span>
+              </HStack>
+            </Link>
+
+            <Link to="/post">
+              <HStack
+                as="span"
+                gap={2}
+                align="center"
+                {...getLinkStyle("/post")}
+              >
+                <Icon as={SquarePen} boxSize={6} />
+                <span style={{ whiteSpace: "nowrap" }}>ノウハウを投稿する</span>
+              </HStack>
+            </Link>
+
+            <Link to="/explore">
+              <HStack
+                as="span"
+                gap={2}
+                align="center"
+                {...getLinkStyle("/explore")}
+              >
+                <Icon as={Search} boxSize={6} />
+                <span style={{ whiteSpace: "nowrap" }}>ノウハウを探す</span>
+              </HStack>
+            </Link>
+
+            <Link to="/community">
+              <HStack
+                as="span"
+                gap={2}
+                align="center"
+                {...getLinkStyle("/community")}
+              >
+                <Icon as={Users} boxSize={6} />
+                <span style={{ whiteSpace: "nowrap" }}>コミュニティ</span>
+              </HStack>
+            </Link>
+
+            <Link to="/guide">
+              <HStack
+                as="span"
+                gap={2}
+                align="center"
+                {...getLinkStyle("/guide")}
+              >
+                <Icon as={BookOpen} boxSize={6} />
+                <span style={{ whiteSpace: "nowrap" }}>ご利用ガイド</span>
+              </HStack>
+            </Link>
+          </HStack>
+        </Flex>
       </Flex>
     </Flex>
   );
