@@ -30,6 +30,8 @@ export default [
     route("knowhow", "routes/knowhow/index.ts"),
     route("knowhow/:id", "routes/knowhow/detail.tsx"),
     route("organization/register", "routes/organization/register.tsx"),
+    route("organization", "routes/organization/index.tsx"),
+    route("organization/:id", "routes/organization/detail.tsx"),
   ]),
   ...prefix("admin", [
     layout("routes/admin/layout.tsx", [

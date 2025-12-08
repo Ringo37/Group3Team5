@@ -12,10 +12,20 @@ import {
   Separator,
   Field,
 } from "@chakra-ui/react";
-import { Calendar, Edit, Mail, Phone, User, Check, X } from "lucide-react";
+import {
+  Calendar,
+  Edit,
+  Mail,
+  Phone,
+  User,
+  Check,
+  X,
+  Building2, // 組織用アイコンを追加
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   Form,
+  Link,
   redirect,
   useActionData,
   useLoaderData,
@@ -27,6 +37,7 @@ import { getOrganizationsByUserId } from "~/models/organization.server";
 import { updateUser } from "~/models/user.server";
 import { getUserId, requireUser } from "~/services/auth.server";
 
+// LoaderとActionはそのまま変更なし
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await requireUser(request);
   const organizations = await getOrganizationsByUserId(user.id);
@@ -59,6 +70,7 @@ export async function action({ request }: ActionFunctionArgs) {
   return { user };
 }
 
+// InfoRowコンポーネントもそのまま
 const InfoRow = ({
   icon,
   label,
@@ -104,7 +116,6 @@ const InfoRow = ({
 
 export default function Mypage() {
   const { user, organizations } = useLoaderData<typeof loader>();
-  console.log(organizations);
   const actionData = useActionData<typeof action>();
   const [isEditing, setIsEditing] = useState(!!actionData?.errors);
   const [data, setData] = useState({
@@ -127,6 +138,7 @@ export default function Mypage() {
     <Box p={8} w="100%">
       <Form method="post">
         <VStack gap={6} align="stretch">
+          {/* ヘッダーエリア */}
           <HStack>
             <Heading as="h1" size="xl">
               マイページ
@@ -152,13 +164,23 @@ export default function Mypage() {
             )}
           </HStack>
 
-          <Box p={6} borderWidth="1px" borderRadius="lg" boxShadow="md">
+          {/* ユーザー情報セクション */}
+          <Box
+            p={6}
+            borderWidth="1px"
+            borderRadius="lg"
+            boxShadow="md"
+            bg="white"
+          >
             <HStack gap={8} align="start">
               <Avatar.Root size="2xl">
                 <Avatar.Fallback name={user.name} />
                 <Avatar.Image src={user.avatar?.url ?? undefined} />
               </Avatar.Root>
               <VStack gap={4} align="stretch" w="100%">
+                <Heading size="md" mb={2}>
+                  基本情報
+                </Heading>
                 <InfoRow
                   icon={User}
                   label="ユーザー名"
@@ -195,6 +217,59 @@ export default function Mypage() {
                 />
               </VStack>
             </HStack>
+          </Box>
+
+          {/* 組織情報セクション (新規追加) */}
+          <Box
+            p={6}
+            borderWidth="1px"
+            borderRadius="lg"
+            boxShadow="md"
+            bg="white"
+          >
+            <VStack align="stretch" gap={4}>
+              <HStack>
+                <Icon as={Building2} color="gray.500" boxSize={6} />
+                <Heading size="md">所属組織</Heading>
+              </HStack>
+
+              <Separator />
+
+              {organizations.length === 0 ? (
+                <Text color="gray.500" py={2}>
+                  所属している組織はありません。
+                </Text>
+              ) : (
+                <VStack align="stretch" gap={3}>
+                  {organizations.map((org) => (
+                    <Link to={`/organization/${org.id}`}>
+                      <Box
+                        key={org.id}
+                        p={4}
+                        borderWidth="1px"
+                        borderRadius="md"
+                        _hover={{ bg: "gray.50" }}
+                      >
+                        <HStack justify="space-between" align="start">
+                          <VStack align="start" gap={1}>
+                            <HStack>
+                              <Text fontWeight="bold" fontSize="lg">
+                                {org.name}
+                              </Text>
+                            </HStack>
+                            {org.detail && (
+                              <Text color="gray.600" fontSize="sm">
+                                {org.detail}
+                              </Text>
+                            )}
+                          </VStack>
+                        </HStack>
+                      </Box>
+                    </Link>
+                  ))}
+                </VStack>
+              )}
+            </VStack>
           </Box>
         </VStack>
       </Form>
