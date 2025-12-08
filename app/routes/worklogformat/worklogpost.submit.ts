@@ -7,36 +7,34 @@ export async function action({ request }: ActionFunctionArgs) {
   const userId = await requireUserId(request);
   const form = await request.formData();
 
-  // ★タイトル取得
   const title = (form.get("title") as string) || "無題";
   const workDetails = form.get("workDetails") as string;
+  const dateString = form.get("date") as string;
   const tags = form.getAll("tags[]") as string[];
   const farmId = 1;
 
-  if (!workDetails) {
+  if (!workDetails)
     throw new Response("作業内容が入力されていません", { status: 400 });
-  }
+
+  const date = dateString ? new Date(dateString) : new Date();
 
   const tagConnect = Array.isArray(tags)
-    ? tags.map((t: string) => ({
-        where: { tag: t },
-        create: { tag: t },
-      }))
+    ? tags.map((t: string) => ({ where: { tag: t }, create: { tag: t } }))
     : [];
 
   try {
     await prisma.workLog.create({
       data: {
-        date: new Date(),
-        title, // ★タイトル保存
+        date: date,
+        title,
         workDetails,
         farm: { connect: { id: farmId } },
         user: { connect: { id: userId } },
         tags: { connectOrCreate: tagConnect },
       },
     });
-
-    return redirect("/worklog/complete");
+    // ★完了画面へ
+    return redirect("/worklogformat/complete");
   } catch (error) {
     console.error("WorkLog 保存エラー:", error);
     throw new Response("保存に失敗しました", { status: 500 });

@@ -1,4 +1,3 @@
-// app/routes/worklog/complete.tsx
 import { Box, VStack, Heading, Text, Button } from "@chakra-ui/react";
 import { Link } from "react-router";
 
@@ -18,13 +17,15 @@ export default function Complete() {
         <Text color="gray.700">
           ご投稿ありがとうございました。日誌は正常に保存されました。
         </Text>
-        <Link to="/">
+
+        {/* ★修正: リンク先を日誌機能のトップページに設定 */}
+        <Link to="/worklogformat">
           <Button
             colorScheme="teal"
             size="md"
             _hover={{ transform: "scale(1.05)" }}
           >
-            トップページに戻る
+            日誌トップに戻る
           </Button>
         </Link>
       </VStack>
