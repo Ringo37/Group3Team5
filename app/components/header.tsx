@@ -197,12 +197,12 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
               </HStack>
             </Link>
 
-            <Link to="/post">
+            <Link to="/worklogformat/worklogpost">
               <HStack
                 as="span"
                 gap={2}
                 align="center"
-                {...getLinkStyle("/post")}
+                {...getLinkStyle("/worklogformat/worklogpost")}
               >
                 <Icon as={SquarePen} boxSize={6} />
                 <span style={{ whiteSpace: "nowrap" }}>ノウハウを投稿する</span>
