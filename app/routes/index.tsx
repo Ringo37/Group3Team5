@@ -179,7 +179,7 @@ export default function Index() {
           </Flex>
         </Box>
       </Box>
-
+      {/*
       <Box mb={8} p={4} bg="gray.50" borderRadius="md" textAlign="center">
         <Text fontSize="sm" color="gray.500" mb={4}>
           ※ 開発用リンク（後で削除予定）
@@ -201,7 +201,7 @@ export default function Index() {
             </Button>
           </Link>
         </Flex>
-      </Box>
+      </Box>*/}
       <Footer />
     </Flex>
   );

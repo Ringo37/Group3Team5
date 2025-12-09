@@ -3,10 +3,8 @@ import {
   Box,
   HStack,
   Button,
-  Input,
   Avatar,
   Menu,
-  InputGroup,
   AvatarGroup,
   Icon,
   Image,
@@ -55,8 +53,9 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
     >
       <Flex
         direction="column"
-        width={{ base: "95%", md: "fit-content" }}
-        maxWidth="7xl"
+        width={{ base: "95%", md: "100%" }}
+        maxWidth="5xl"
+        mx="auto"
       >
         <Flex
           align="center"
@@ -67,7 +66,7 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
           gap={4}
           px={{ base: 3, md: 0 }}
         >
-          <HStack ml={{ base: 0, md: -100, lg: -100 }}>
+          <HStack ml={{ base: 0, md: 0, lg: 0 }}>
             <Link to="/">
               <HStack gap={3} align="center">
                 <Image
@@ -84,7 +83,7 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
             </Link>
           </HStack>
 
-          <HStack align="center">
+          <HStack align="center" mr={user ? { base: 50, md: 50 } : 0}>
             {user ? (
               <Menu.Root>
                 <Menu.Trigger _focus={{ borderRadius: "full" }}>
@@ -156,7 +155,7 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
             )}
           </HStack>
 
-          {/* スマホ用検索バー */}
+          {/* スマホ用検索バー 
           <Box
             flex={1}
             minWidth={{ base: "200px", md: "200px" }}
@@ -176,6 +175,7 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
               />
             </InputGroup>
           </Box>
+          */}
         </Flex>
 
         {/* === 下段: ナビゲーション === */}

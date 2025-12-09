@@ -31,6 +31,10 @@ export default function Footer() {
             </Text>
           </VStack>
 
+          <Text fontSize="sm" color="gray.300" mb={4}>
+            ※ 開発用リンク（後で削除予定）
+          </Text>
+
           <Flex
             direction={{ base: "column", md: "row" }}
             gap={6}
