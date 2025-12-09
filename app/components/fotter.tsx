@@ -87,6 +87,15 @@ export default function Footer() {
                   日誌機能
                 </Button>
               </Link>
+              <Link to="/edit-interest-tags">
+                <Button
+                  variant="ghost"
+                  color="gray.200"
+                  _hover={{ bg: "whiteAlpha.200", color: "white" }}
+                >
+                  興味を登録
+                </Button>
+              </Link>
             </HStack>
           </Flex>
 
