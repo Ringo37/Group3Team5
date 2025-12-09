@@ -51,12 +51,12 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
         color: "whiteAlpha.900",
       }}
       color="gray.800"
+      alignItems="center"
     >
       <Flex
         direction="column"
+        width={{ base: "95%", md: "fit-content" }}
         maxWidth="7xl"
-        mx="auto"
-        width={{ base: "95%", md: "90%", lg: "70%" }}
       >
         <Flex
           align="center"
@@ -65,9 +65,9 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
           paddingBottom={2}
           width="100%"
           gap={4}
-          px={{ base: 3, md: 6 }}
+          px={{ base: 3, md: 0 }}
         >
-          <HStack>
+          <HStack ml={{ base: 0, md: -100, lg: -100 }}>
             <Link to="/">
               <HStack gap={3} align="center">
                 <Image
@@ -83,13 +83,6 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
               </HStack>
             </Link>
           </HStack>
-
-          <Box
-            flex={1}
-            minWidth="200px"
-            mx={8}
-            display={{ base: "none", md: "block" }}
-          ></Box>
 
           <HStack align="center">
             {user ? (
@@ -186,9 +179,7 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
         </Flex>
 
         {/* === 下段: ナビゲーション === */}
-        {/* コンテナ自体にはpaddingYをつけない（リンク側のpaddingで高さを稼ぐため） */}
         <Flex as="nav" align="center" justify="center" width="100%">
-          {/* justify="center" で中央揃えに戻し、gapで間隔を調整 */}
           <HStack gap={{ base: 4, md: 8, lg: 10 }}>
             <Link to="/">
               <HStack as="span" gap={2} align="center" {...getLinkStyle("/")}>
