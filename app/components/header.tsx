@@ -141,7 +141,7 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
                     ログイン
                   </Button>
                 </Link>
-                <Link to="/signup">
+                <Link to="/join">
                   <Button
                     bg="#009245"
                     color="white"
