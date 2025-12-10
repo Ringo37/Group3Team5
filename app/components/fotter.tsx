@@ -31,6 +31,10 @@ export default function Footer() {
             </Text>
           </VStack>
 
+          <Text fontSize="sm" color="gray.300" mb={4}>
+            ※ 開発用リンク（後で削除予定）
+          </Text>
+
           <Flex
             direction={{ base: "column", md: "row" }}
             gap={6}
@@ -81,6 +85,15 @@ export default function Footer() {
                   _hover={{ bg: "whiteAlpha.200", color: "white" }}
                 >
                   日誌機能
+                </Button>
+              </Link>
+              <Link to="/edit-interest-tags">
+                <Button
+                  variant="ghost"
+                  color="gray.200"
+                  _hover={{ bg: "whiteAlpha.200", color: "white" }}
+                >
+                  興味を登録
                 </Button>
               </Link>
             </HStack>

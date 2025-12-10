@@ -3,10 +3,8 @@ import {
   Box,
   HStack,
   Button,
-  Input,
   Avatar,
   Menu,
-  InputGroup,
   AvatarGroup,
   Icon,
   Image,
@@ -51,12 +49,13 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
         color: "whiteAlpha.900",
       }}
       color="gray.800"
+      alignItems="center"
     >
       <Flex
         direction="column"
-        maxWidth="7xl"
+        width={{ base: "95%", md: "100%" }}
+        maxWidth="5xl"
         mx="auto"
-        width={{ base: "95%", md: "90%", lg: "70%" }}
       >
         <Flex
           align="center"
@@ -65,9 +64,9 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
           paddingBottom={2}
           width="100%"
           gap={4}
-          px={{ base: 3, md: 6 }}
+          px={{ base: 3, md: 0 }}
         >
-          <HStack>
+          <HStack ml={{ base: 0, md: 0, lg: 0 }}>
             <Link to="/">
               <HStack gap={3} align="center">
                 <Image
@@ -84,14 +83,7 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
             </Link>
           </HStack>
 
-          <Box
-            flex={1}
-            minWidth="200px"
-            mx={8}
-            display={{ base: "none", md: "block" }}
-          ></Box>
-
-          <HStack align="center">
+          <HStack align="center" mr={user ? { base: 50, md: 50 } : 0}>
             {user ? (
               <Menu.Root>
                 <Menu.Trigger _focus={{ borderRadius: "full" }}>
@@ -163,7 +155,7 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
             )}
           </HStack>
 
-          {/* スマホ用検索バー */}
+          {/* スマホ用検索バー 
           <Box
             flex={1}
             minWidth={{ base: "200px", md: "200px" }}
@@ -183,12 +175,11 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
               />
             </InputGroup>
           </Box>
+          */}
         </Flex>
 
         {/* === 下段: ナビゲーション === */}
-        {/* コンテナ自体にはpaddingYをつけない（リンク側のpaddingで高さを稼ぐため） */}
         <Flex as="nav" align="center" justify="center" width="100%">
-          {/* justify="center" で中央揃えに戻し、gapで間隔を調整 */}
           <HStack gap={{ base: 4, md: 8, lg: 10 }}>
             <Link to="/">
               <HStack as="span" gap={2} align="center" {...getLinkStyle("/")}>
