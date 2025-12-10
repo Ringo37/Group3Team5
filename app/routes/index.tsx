@@ -165,7 +165,7 @@ export default function Index() {
                 borderColor="#009245"
                 marginBottom="-2px"
               >
-                最新の投稿
+                人気の投稿
               </Heading>
             </Box>
             <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={8}>

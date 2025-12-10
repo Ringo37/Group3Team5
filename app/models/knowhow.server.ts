@@ -131,7 +131,11 @@ export async function getKnowHows(page = 1, limit = 6, search?: string) {
     skip: (page - 1) * limit,
     take: limit,
     include: { cover: true },
-    orderBy: { createdAt: "desc" },
+    orderBy: {
+      accessLogs: {
+        _count: "desc",
+      },
+    },
   });
 }
 
