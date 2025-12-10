@@ -81,3 +81,10 @@ export async function getFarmById(id: number) {
 export async function deleteFarmById(id: number) {
   return prisma.farm.delete({ where: { id } });
 }
+
+export async function getFarmsByUserId(id: string) {
+  return prisma.farm.findMany({
+    where: { users: { some: { id } } },
+    include: { orgnization: true },
+  });
+}

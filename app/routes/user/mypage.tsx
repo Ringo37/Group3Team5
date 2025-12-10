@@ -20,7 +20,8 @@ import {
   User,
   Check,
   X,
-  Building2, // 組織用アイコンを追加
+  Building2,
+  Tractor,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
@@ -33,18 +34,19 @@ import {
   type LoaderFunctionArgs,
 } from "react-router";
 
+import { getFarmsByUserId } from "~/models/farm.server";
 import { getOrganizationsByUserId } from "~/models/organization.server";
 import { updateUser } from "~/models/user.server";
 import { getUserId, requireUser } from "~/services/auth.server";
 
-// LoaderとActionはそのまま変更なし
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await requireUser(request);
   const organizations = await getOrganizationsByUserId(user.id);
+  const farms = await getFarmsByUserId(user.id);
   if (!user) {
     return redirect("/login");
   }
-  return { user, organizations };
+  return { user, organizations, farms };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -115,7 +117,7 @@ const InfoRow = ({
 };
 
 export default function Mypage() {
-  const { user, organizations } = useLoaderData<typeof loader>();
+  const { user, organizations, farms } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const [isEditing, setIsEditing] = useState(!!actionData?.errors);
   const [data, setData] = useState({
@@ -219,6 +221,70 @@ export default function Mypage() {
             </HStack>
           </Box>
 
+          {/* 農場情報セクション */}
+          <Box
+            p={6}
+            borderWidth="1px"
+            borderRadius="lg"
+            boxShadow="md"
+            bg="white"
+          >
+            <VStack align="stretch" gap={4}>
+              <HStack justify="space-between">
+                <HStack>
+                  <Icon as={Tractor} color="green.500" boxSize={6} />{" "}
+                  {/* 農場アイコン */}
+                  <Heading size="md">農場情報</Heading>
+                </HStack>
+                <Link to={"/farm/create"}>
+                  <Button colorScheme="green" size="sm">
+                    農場を追加
+                  </Button>
+                </Link>
+              </HStack>
+
+              <Separator />
+
+              {farms.length === 0 ? (
+                <Text color="gray.500" py={2}>
+                  登録されている農場はありません。
+                </Text>
+              ) : (
+                <VStack align="stretch" gap={3}>
+                  {farms.map((farm) => (
+                    <Link key={farm.id} to={`/farm/${farm.id}`}>
+                      <Box
+                        p={4}
+                        borderWidth="1px"
+                        borderRadius="md"
+                        _hover={{ bg: "gray.50" }}
+                      >
+                        <VStack align="start" gap={1}>
+                          <HStack>
+                            <Text fontWeight="bold" fontSize="lg">
+                              {farm.name}
+                            </Text>
+                          </HStack>
+                          <Text color="gray.600" fontSize="sm">
+                            地域: {farm.region} / 面積: {farm.areaHa} ha
+                          </Text>
+                          <Text color="gray.600" fontSize="sm">
+                            作付けカレンダー: {farm.seasonalCalendar}
+                          </Text>
+                          {farm.orgnization && (
+                            <Text color="gray.500" fontSize="sm">
+                              所属組織: {farm.orgnization?.name ?? "なし"}
+                            </Text>
+                          )}
+                        </VStack>
+                      </Box>
+                    </Link>
+                  ))}
+                </VStack>
+              )}
+            </VStack>
+          </Box>
+
           {/* 組織情報セクション (新規追加) */}
           <Box
             p={6}
@@ -228,9 +294,16 @@ export default function Mypage() {
             bg="white"
           >
             <VStack align="stretch" gap={4}>
-              <HStack>
-                <Icon as={Building2} color="gray.500" boxSize={6} />
-                <Heading size="md">所属組織</Heading>
+              <HStack justify="space-between">
+                <HStack>
+                  <Icon as={Building2} color="gray.500" boxSize={6} />
+                  <Heading size="md">所属組織</Heading>
+                </HStack>
+                <Link to="/organization/create">
+                  <Button colorScheme="blue" size="sm">
+                    組織を追加
+                  </Button>
+                </Link>
               </HStack>
 
               <Separator />
