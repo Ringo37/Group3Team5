@@ -1,3 +1,4 @@
+import type { WeatherCondition } from "@prisma/client";
 import { redirect, type ActionFunctionArgs } from "react-router";
 
 import { prisma } from "~/lib/prisma";
@@ -11,6 +12,16 @@ export async function action({ request }: ActionFunctionArgs) {
   const workDetails = form.get("workDetails") as string;
   const dateString = form.get("date") as string;
   const tags = form.getAll("tags[]") as string[];
+
+  const tempValue = form.get("temperature") as string | null;
+  const temperature: number | null = tempValue ? Number(tempValue) : null;
+  const humValue = form.get("humidity") as string | null;
+  const humidity: number | null = humValue ? Number(humValue) : null;
+  const weatherValue = form.get("weather");
+  const weather: WeatherCondition | null = weatherValue
+    ? (weatherValue as WeatherCondition)
+    : null;
+
   const farmId = 1;
 
   if (!workDetails)
@@ -31,6 +42,9 @@ export async function action({ request }: ActionFunctionArgs) {
         farm: { connect: { id: farmId } },
         user: { connect: { id: userId } },
         tags: { connectOrCreate: tagConnect },
+        temperature,
+        humidity,
+        weather,
       },
     });
     // ★完了画面へ

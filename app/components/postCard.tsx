@@ -40,7 +40,7 @@ export const PostCard = ({ knowhow }: Props) => {
               {formatDate(knowhow.createdAt)}
             </Text>
             <Text fontSize="xs" color="teal.500" fontWeight="medium">
-              カテゴリ名
+              タグをここ
             </Text>
           </HStack>
         </Box>

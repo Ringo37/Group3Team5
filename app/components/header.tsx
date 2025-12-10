@@ -196,7 +196,7 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
                 {...getLinkStyle("/worklogformat/worklogpost")}
               >
                 <Icon as={SquarePen} boxSize={6} />
-                <span style={{ whiteSpace: "nowrap" }}>ノウハウを投稿する</span>
+                <span style={{ whiteSpace: "nowrap" }}>日誌を作成する</span>
               </HStack>
             </Link>
 

@@ -12,7 +12,7 @@ interface CreateKnowhowProps {
 }
 
 export type KnowhowWithCover = Prisma.KnowhowGetPayload<{
-  include: { cover: true };
+  include: { cover: true; tags: true };
 }>;
 
 export async function createKnowhow({
@@ -130,8 +130,12 @@ export async function getKnowHows(page = 1, limit = 6, search?: string) {
     },
     skip: (page - 1) * limit,
     take: limit,
-    include: { cover: true },
-    orderBy: { createdAt: "desc" },
+    include: { cover: true, tags: true },
+    orderBy: {
+      accessLogs: {
+        _count: "desc",
+      },
+    },
   });
 }
 
