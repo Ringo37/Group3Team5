@@ -32,6 +32,7 @@ export default [
     route("organization/register", "routes/organization/register.tsx"),
     route("organization", "routes/organization/index.tsx"),
     route("organization/:id", "routes/organization/detail.tsx"),
+    route("farm/create", "routes/farm/create.tsx"),
   ]),
   ...prefix("admin", [
     layout("routes/admin/layout.tsx", [
