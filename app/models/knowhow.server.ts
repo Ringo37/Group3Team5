@@ -95,24 +95,53 @@ export async function deleteKnowhowById(id: number, userId: string) {
   });
 }
 
-export async function getKnowHows(page = 1, perPage = 6) {
-  return prisma.knowhow.findMany({
-    skip: (page - 1) * perPage,
-    take: perPage,
-    where: { visibility: Visibility.PUBLIC },
-    include: { cover: true },
-    orderBy: { createdAt: "desc" },
-  });
-}
-
 export async function getKnowHowsByUserId(userId: string) {
   return prisma.knowhow.findMany({
     where: { userId },
   });
 }
 
-export async function getKnowHowsCount() {
+function buildSearchWhere(search?: string) {
+  if (!search) return {};
+
+  return {
+    OR: [
+      { title: { contains: search } },
+      { summary: { contains: search } },
+      { fullText: { contains: search } },
+      {
+        tags: {
+          some: {
+            tag: { contains: search },
+          },
+        },
+      },
+    ],
+  };
+}
+
+export async function getKnowHows(page = 1, limit = 6, search?: string) {
+  const searchFilter = buildSearchWhere(search);
+
+  return prisma.knowhow.findMany({
+    where: {
+      visibility: "PUBLIC",
+      ...searchFilter,
+    },
+    skip: (page - 1) * limit,
+    take: limit,
+    include: { cover: true },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function getKnowHowsCount(search?: string) {
+  const searchFilter = buildSearchWhere(search);
+
   return prisma.knowhow.count({
-    where: { visibility: Visibility.PUBLIC },
+    where: {
+      visibility: "PUBLIC",
+      ...searchFilter,
+    },
   });
 }

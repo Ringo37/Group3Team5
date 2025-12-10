@@ -10,7 +10,8 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { Search } from "lucide-react";
-import { Link, useLoaderData } from "react-router";
+import { useState } from "react";
+import { Link, useLoaderData, useNavigate } from "react-router";
 
 import Footer from "~/components/fotter";
 import { PostCard } from "~/components/postCard";
@@ -33,6 +34,15 @@ export async function loader() {
 
 export default function Index() {
   const { knowhows } = useLoaderData<typeof loader>();
+  const navigate = useNavigate();
+  const [keyword, setKeyword] = useState("");
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      navigate(`/explore?search=${encodeURIComponent(keyword)}`);
+    }
+  };
   return (
     <Flex direction="column" minH="100vh" bg="#fdf8f3">
       <Box position="relative" height="60vh" width="100%" overflow="hidden">
@@ -124,6 +134,9 @@ export default function Index() {
                 boxShadow: "0 0 0 3px rgba(0, 146, 69, 0.4)",
                 outline: "none",
               }}
+              onChange={(e) => setKeyword(e.target.value)}
+              value={keyword}
+              onKeyDown={handleKeyDown}
             />
           </Box>
         </Flex>
