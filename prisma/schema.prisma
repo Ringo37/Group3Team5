@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -26,34 +23,59 @@ enum Action {
   UPDATE
 }
 
+enum Visibility {
+  PUBLIC
+  SUMMARY_ONLY
+  RESTRICTED
+}
+
+enum WeatherCondition {
+  SUNNY
+  CLOUDY
+  RAINY
+  SNOWY
+  WINDY
+  FOGGY
+}
+
+// ============================================
+// User & Auth
+// ============================================
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  tel       String?
+  id    String @id @default(cuid())
+  name  String
+  email String @unique
+  tel   String?
+  role  Role   @default(USER)
+  avatar File?  @relation(fields: [fileId], references: [id])
+  fileId String?
+  password Password?
+
   avatar    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  role      Role     @default(USER)
 
-  password                Password?
+  // Relations
   organizations           Organization[] @relation("Organization")
   ownedOrganizations      Organization[] @relation("OwnedOrganization")
   accessLogs              AccessLog[]
   knowhows                Knowhow[]
   ndaAgreementsAsProvider NdaAgreement[] @relation("Provider")
   ndaAgreementsAsLearner  NdaAgreement[] @relation("Learner")
-  Farm                    Farm[]
-  WorkLog                 WorkLog[]
-  InterestTag             InterestTag[]
+  farms                   Farm[]
+  workLogs                WorkLog[]
+  interestTags            InterestTag[]
   accessibleKnowhows      Knowhow[]      @relation("KnowhowAccess")
+  
+  // Board & Like
+  posts Post[]
+  likes Like[]
 }
 
 model Password {
   hash   String
   userId String @unique
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model InterestTag {
@@ -85,19 +107,15 @@ model Farm {
   areaHa           Float
   seasonalCalendar String
 
-  users    User[]
-  knowhows Knowhow[]
-  WorkLogs WorkLog[]
-  mainCrop Crop      @relation(fields: [cropId], references: [id])
-  cropId   Int
+  users          User[]
+  knowhows       Knowhow[]
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  workLogs       WorkLog[]
+  mainCrop       Crop           @relation(fields: [cropId], references: [id])
+  cropId         Int
+  organizationId String?
 
   @@index([cropId])
-}
-
-enum Visibility {
-  PUBLIC
-  SUMMARY_ONLY
-  RESTRICTED
 }
 
 model Knowhow {
@@ -150,15 +168,6 @@ model NdaAgreement {
   @@index([learnerId])
 }
 
-enum WeatherCondition {
-  SUNNY
-  CLOUDY
-  RAINY
-  SNOWY
-  WINDY
-  FOGGY
-}
-
 model WorkLog {
   id            Int               @id @default(autoincrement())
   date          DateTime
@@ -170,13 +179,64 @@ model WorkLog {
   precipitation Float?
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
+  title         String            @default("作業日誌")
 
   farmId Int
   farm   Farm   @relation(fields: [farmId], references: [id])
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
+  files File[]
+  tags  InterestTag[] @relation("WorkLogTags")
+
   @@index([farmId])
   @@index([userId])
   @@index([date])
+}
+
+model File {
+  id       String  @id @default(cuid())
+  url      String
+  fileName String
+  mimeType String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  knowhows Knowhow[]
+  users    User[]
+  workLogs WorkLog[]
+}
+
+// ============================================
+// Board & Like
+// ============================================
+model Post {
+  id        String @id @default(cuid())
+  title     String
+  content   String
+  author    User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+
+  likes     Like[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([createdAt])
+}
+
+model Like {
+  id        String @id @default(cuid())
+  post      Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId])
+  @@index([postId])
+  @@index([userId])
 }
