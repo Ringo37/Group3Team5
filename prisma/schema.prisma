@@ -164,6 +164,7 @@ enum WeatherCondition {
   SNOWY
   WINDY
   FOGGY
+  THUNDERSTORM
 }
 
 model WorkLog {

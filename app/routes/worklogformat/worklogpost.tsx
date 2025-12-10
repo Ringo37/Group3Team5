@@ -8,6 +8,9 @@ import {
   Textarea,
   Button,
   Input,
+  createListCollection,
+  Select,
+  Portal,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import {
@@ -24,6 +27,8 @@ import {
 } from "~/api";
 import { farmKeyword } from "~/data/farmKeyword";
 import { apiClient } from "~/lib/apiClient";
+import { getCurrentPosition } from "~/utils/getPosition.client";
+import { fetchCurrentWeather } from "~/utils/getWeather";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -60,12 +65,47 @@ export default function WorkLogForm() {
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
 
+  const [weather, setWeather] = useState("");
+  const [temperature, setTemperature] = useState("");
+  const [humidity, setHumidity] = useState("");
+  const [loadingWeather, setLoadingWeather] = useState(false);
+
+  const weatherCollection = createListCollection({
+    items: [
+      { value: "SUNNY", label: "晴れ" },
+      { value: "CLOUDY", label: "曇り" },
+      { value: "RAINY", label: "雨" },
+      { value: "SNOWY", label: "雪" },
+      { value: "WINDY", label: "風" },
+      { value: "FOGGY", label: "霧" },
+      { value: "THUNDERSTORM", label: "雷雨" },
+    ],
+  });
+
+  // 天気取得
+  const handleAutoFillWeather = async () => {
+    setLoadingWeather(true);
+    try {
+      const pos = await getCurrentPosition();
+      const data = await fetchCurrentWeather(
+        pos.coords.latitude,
+        pos.coords.longitude,
+      );
+      setTemperature(String(data.temperature));
+      setHumidity(String(data.humidity));
+      setWeather(data.weather);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingWeather(false);
+    }
+  };
+
   const [selectedTags, setSelectedTags] = useState<string[]>(
     actionData?.tags ?? [],
   );
   const [newTagInput, setNewTagInput] = useState("");
   const [title, setTitle] = useState(actionData?.title ?? "");
-  // ★追加: 日付の初期値を今日に設定
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [posting, setPosting] = useState(false);
 
@@ -90,29 +130,22 @@ export default function WorkLogForm() {
     ) as HTMLTextAreaElement | null;
     const textValue = textarea ? textarea.value : (actionData?.text ?? "");
 
-    if (!textValue.trim()) {
-      alert("内容を入力してください");
-      return;
-    }
-    if (!title.trim()) {
-      alert("表題を入力してください");
-      return;
-    }
-    if (!date) {
-      alert("日付を入力してください");
-      return;
-    }
+    if (!textValue.trim()) return alert("内容を入力してください");
+    if (!title.trim()) return alert("表題を入力してください");
+    if (!date) return alert("日付を入力してください");
 
     setPosting(true);
 
-    // ★リンク先: 正しい submit API へ
     const url = "/worklogformat/worklogpost/submit";
 
     try {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("workDetails", textValue);
-      formData.append("date", date); // 日付も送信
+      formData.append("date", date);
+      formData.append("temperature", temperature);
+      formData.append("humidity", humidity);
+      formData.append("weather", weather);
       selectedTags.forEach((tag) => formData.append("tags[]", tag));
 
       const res = await fetch(url, { method: "POST", body: formData });
@@ -134,7 +167,6 @@ export default function WorkLogForm() {
         </Heading>
 
         <Box textAlign="left">
-          {/* ★修正: 戻る先を worklogformat に */}
           <Link to="/worklogformat">
             <Button
               variant="outline"
@@ -150,7 +182,7 @@ export default function WorkLogForm() {
         <Box p={6} shadow="lg" borderWidth="1px" borderRadius="lg" bg="white">
           <RouterForm method="post">
             <VStack gap={4} align="stretch">
-              {/* ★日付入力欄 */}
+              {/* 日付入力 */}
               <Box>
                 <Text fontWeight="bold" color="black" mb={2} as="label">
                   作業日{" "}
@@ -169,6 +201,7 @@ export default function WorkLogForm() {
                 />
               </Box>
 
+              {/* 表題 */}
               <Box>
                 <Text fontWeight="bold" color="black" mb={2} as="label">
                   表題{" "}
@@ -186,6 +219,8 @@ export default function WorkLogForm() {
                   borderColor="gray.300"
                 />
               </Box>
+
+              {/* 作業内容 */}
               <Box>
                 <Text fontWeight="bold" color="black" mb={2} as="label">
                   作業内容{" "}
@@ -204,9 +239,13 @@ export default function WorkLogForm() {
                   borderColor="gray.300"
                 />
               </Box>
+
+              {/* タグ hidden */}
               {selectedTags.map((tag) => (
                 <input key={tag} type="hidden" name="tags[]" value={tag} />
               ))}
+
+              {/* キーワード抽出ボタン */}
               <Button
                 type="submit"
                 colorScheme="teal"
@@ -217,6 +256,7 @@ export default function WorkLogForm() {
                 キーワードを抽出
               </Button>
 
+              {/* 抽出キーワード */}
               {actionData?.keywords && (
                 <Box
                   bg="gray.50"
@@ -229,31 +269,30 @@ export default function WorkLogForm() {
                     抽出候補:
                   </Text>
                   <HStack wrap="wrap" gap={2}>
-                    {actionData.keywords.keywords.map(
-                      (item: any, index: number) => (
-                        <Box
-                          key={index}
-                          p={2}
-                          bg={
-                            selectedTags.includes(item.word)
-                              ? "teal.100"
-                              : "white"
-                          }
-                          borderWidth="1px"
-                          borderRadius="md"
-                          cursor="pointer"
-                          onClick={() => toggleTag(item.word)}
-                        >
-                          <Text fontWeight="bold" color="black" fontSize="sm">
-                            {item.word}
-                          </Text>
-                        </Box>
-                      ),
-                    )}
+                    {actionData.keywords.keywords.map((item, index) => (
+                      <Box
+                        key={index}
+                        p={2}
+                        bg={
+                          selectedTags.includes(item.word)
+                            ? "teal.100"
+                            : "white"
+                        }
+                        borderWidth="1px"
+                        borderRadius="md"
+                        cursor="pointer"
+                        onClick={() => toggleTag(item.word)}
+                      >
+                        <Text fontWeight="bold" color="black" fontSize="sm">
+                          {item.word}
+                        </Text>
+                      </Box>
+                    ))}
                   </HStack>
                 </Box>
               )}
 
+              {/* タグ管理 */}
               <Box>
                 <Text fontWeight="bold" color="black" mb={2}>
                   選択中のタグ
@@ -298,6 +337,80 @@ export default function WorkLogForm() {
                 </HStack>
               </Box>
 
+              <Box>
+                <Text fontWeight="bold" color="black" mb={2}>
+                  天気情報
+                </Text>
+                <HStack gap={2} wrap="wrap">
+                  <Input
+                    placeholder="気温(℃)"
+                    value={temperature}
+                    onChange={(e) => setTemperature(e.target.value)}
+                    size="sm"
+                    width="100px"
+                  />
+                  ℃
+                  <Input
+                    placeholder="湿度(%)"
+                    value={humidity}
+                    onChange={(e) => setHumidity(e.target.value)}
+                    size="sm"
+                    width="100px"
+                  />
+                  %
+                  {/* <Input
+                    placeholder="天気"
+                    value={weather}
+                    onChange={(e) => setWeather(e.target.value)}
+                    size="sm"
+                    width="120px"
+                  /> */}
+                  <Select.Root
+                    collection={weatherCollection}
+                    width="120px"
+                    value={[weather]}
+                    onValueChange={(val: any) => {
+                      if (typeof val === "string") {
+                        setWeather(val);
+                      } else if ("value" in val) {
+                        setWeather(val.value);
+                      }
+                    }}
+                  >
+                    <Select.HiddenSelect />
+                    <Select.Control>
+                      <Select.Trigger>
+                        <Select.ValueText placeholder="天気を選択" />
+                      </Select.Trigger>
+                      <Select.IndicatorGroup>
+                        <Select.Indicator />
+                      </Select.IndicatorGroup>
+                    </Select.Control>
+                    <Portal>
+                      <Select.Positioner>
+                        <Select.Content>
+                          {weatherCollection.items.map((item) => (
+                            <Select.Item item={item} key={item.value}>
+                              {item.label}
+                              <Select.ItemIndicator />
+                            </Select.Item>
+                          ))}
+                        </Select.Content>
+                      </Select.Positioner>
+                    </Portal>
+                  </Select.Root>
+                  <Button
+                    size="sm"
+                    colorScheme="yellow"
+                    loading={loadingWeather}
+                    onClick={handleAutoFillWeather}
+                  >
+                    自動取得
+                  </Button>
+                </HStack>
+              </Box>
+
+              {/* 日誌投稿 */}
               <Button
                 mt={4}
                 type="button"
