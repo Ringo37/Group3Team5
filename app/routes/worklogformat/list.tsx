@@ -64,7 +64,7 @@ export default function WorkLogList() {
         </Box>
       )}
 
-      {/* ★追加: 日誌トップに戻るボタン */}
+      {/* 日誌トップに戻るボタン */}
       <Box mb={4}>
         <Link to="/worklogformat">
           <Button
@@ -108,8 +108,11 @@ export default function WorkLogList() {
           >
             <VStack align="stretch" gap={3}>
               <HStack justify="space-between">
+                {/* JSTで日付表示 */}
                 <Text fontSize="sm" color="gray.500">
-                  {new Date(log.date).toLocaleDateString()}
+                  {new Date(log.date).toLocaleDateString("ja-JP", {
+                    timeZone: "Asia/Tokyo",
+                  })}
                 </Text>
                 <Text fontSize="xs" color="gray.400">
                   {log.user?.name ?? "不明"}

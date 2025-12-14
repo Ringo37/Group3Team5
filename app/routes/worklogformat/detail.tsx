@@ -8,6 +8,7 @@ import {
   Tag,
   Button,
   Flex,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
@@ -22,6 +23,17 @@ import {
 
 import { prisma } from "~/lib/prisma";
 import { getUserId, requireUserId } from "~/services/auth.server";
+
+// ★修正: "強風" を "風" に変更し、worklogpostと統一
+const WEATHER_LABEL: Record<string, string> = {
+  SUNNY: "晴れ",
+  CLOUDY: "曇り",
+  RAINY: "雨",
+  SNOWY: "雪",
+  WINDY: "風",
+  FOGGY: "霧",
+  THUNDERSTORM: "雷雨",
+};
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   if (!params.id) throw new Response("IDが必要です", { status: 400 });
@@ -43,7 +55,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (result.count === 0)
     throw new Response("権限がないか、日誌が存在しません", { status: 403 });
 
-  // ★修正: リダイレクト先を worklogformat に変更
   return redirect("/worklogformat/list?deleted=true");
 }
 
@@ -89,7 +100,6 @@ export default function WorkLogDetail() {
             </Box>
           )}
 
-          {/* ★修正: 戻る先を変更 */}
           <Link to="/worklogformat/list">
             <Button
               variant="solid"
@@ -120,12 +130,26 @@ export default function WorkLogDetail() {
                   wrap="wrap"
                   gap={2}
                 >
-                  <Text fontSize="sm" color="gray.500">
-                    {new Date(log.date).toLocaleString()}
-                  </Text>
+                  <HStack>
+                    <Text fontSize="sm" color="gray.500">
+                      {new Date(log.date).toLocaleDateString("ja-JP", {
+                        timeZone: "Asia/Tokyo",
+                      })}
+                    </Text>
+                    {log.weather && (
+                      <Tag.Root
+                        size="md"
+                        variant="solid"
+                        bg="orange.400"
+                        color="white"
+                      >
+                        <Tag.Label>{WEATHER_LABEL[log.weather]}</Tag.Label>
+                      </Tag.Root>
+                    )}
+                  </HStack>
+
                   {isOwner && (
                     <HStack>
-                      {/* ★修正: 編集画面へのリンクパスを変更 */}
                       <Link to={`/worklogformat/${log.id}/edit`}>
                         <Button size="sm" colorScheme="blue" variant="outline">
                           編集
@@ -151,6 +175,55 @@ export default function WorkLogDetail() {
                   作成者: {log.user?.name ?? "不明"}
                 </Text>
               </Box>
+
+              {(log.temperature ||
+                log.humidity ||
+                log.windSpeed ||
+                log.precipitation) && (
+                <Box
+                  p={4}
+                  bg="gray.50"
+                  borderRadius="md"
+                  borderWidth="1px"
+                  borderColor="gray.100"
+                >
+                  <SimpleGrid columns={{ base: 2, md: 4 }} gap={4}>
+                    <Box>
+                      <Text fontSize="xs" color="gray.500">
+                        気温
+                      </Text>
+                      <Text fontWeight="bold">
+                        {log.temperature ? `${log.temperature}℃` : "-"}
+                      </Text>
+                    </Box>
+                    <Box>
+                      <Text fontSize="xs" color="gray.500">
+                        湿度
+                      </Text>
+                      <Text fontWeight="bold">
+                        {log.humidity ? `${log.humidity}%` : "-"}
+                      </Text>
+                    </Box>
+                    <Box>
+                      <Text fontSize="xs" color="gray.500">
+                        風速
+                      </Text>
+                      <Text fontWeight="bold">
+                        {log.windSpeed ? `${log.windSpeed}m/s` : "-"}
+                      </Text>
+                    </Box>
+                    <Box>
+                      <Text fontSize="xs" color="gray.500">
+                        降水量
+                      </Text>
+                      <Text fontWeight="bold">
+                        {log.precipitation ? `${log.precipitation}mm` : "-"}
+                      </Text>
+                    </Box>
+                  </SimpleGrid>
+                </Box>
+              )}
+
               <Box py={4}>
                 <Text
                   fontSize="lg"
@@ -161,6 +234,7 @@ export default function WorkLogDetail() {
                   {log.workDetails}
                 </Text>
               </Box>
+
               {log.tags && log.tags.length > 0 && (
                 <Box pt={4} borderTopWidth="1px" borderColor="gray.100">
                   <Text fontSize="sm" color="gray.500" mb={2}>

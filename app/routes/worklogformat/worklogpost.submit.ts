@@ -13,14 +13,21 @@ export async function action({ request }: ActionFunctionArgs) {
   const dateString = form.get("date") as string;
   const tags = form.getAll("tags[]") as string[];
 
-  const tempValue = form.get("temperature") as string | null;
-  const temperature: number | null = tempValue ? Number(tempValue) : null;
-  const humValue = form.get("humidity") as string | null;
-  const humidity: number | null = humValue ? Number(humValue) : null;
-  const weatherValue = form.get("weather");
-  const weather: WeatherCondition | null = weatherValue
-    ? (weatherValue as WeatherCondition)
-    : null;
+  // 環境データ
+  const weatherString = form.get("weather") as string;
+  const weather = weatherString
+    ? (weatherString as WeatherCondition)
+    : undefined;
+
+  const tempStr = form.get("temperature") as string;
+  const humidityStr = form.get("humidity") as string;
+  const windStr = form.get("windSpeed") as string;
+  const precipStr = form.get("precipitation") as string;
+
+  const temperature = tempStr ? parseFloat(tempStr) : null;
+  const humidity = humidityStr ? parseFloat(humidityStr) : null;
+  const windSpeed = windStr ? parseFloat(windStr) : null;
+  const precipitation = precipStr ? parseFloat(precipStr) : null;
 
   const farmId = 1;
 
@@ -36,18 +43,20 @@ export async function action({ request }: ActionFunctionArgs) {
   try {
     await prisma.workLog.create({
       data: {
-        date: date,
+        date,
         title,
         workDetails,
+        weather,
+        temperature,
+        humidity,
+        windSpeed,
+        precipitation,
         farm: { connect: { id: farmId } },
         user: { connect: { id: userId } },
         tags: { connectOrCreate: tagConnect },
-        temperature,
-        humidity,
-        weather,
       },
     });
-    // ★完了画面へ
+
     return redirect("/worklogformat/complete");
   } catch (error) {
     console.error("WorkLog 保存エラー:", error);
