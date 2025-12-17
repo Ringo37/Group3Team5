@@ -30,6 +30,17 @@ import { apiClient } from "~/lib/apiClient";
 import { getCurrentPosition } from "~/utils/getPosition.client";
 import { fetchCurrentWeather } from "~/utils/getWeather";
 
+// 天気の選択肢
+const WEATHER_OPTIONS = [
+  { value: "SUNNY", label: "晴れ" },
+  { value: "CLOUDY", label: "曇り" },
+  { value: "RAINY", label: "雨" },
+  { value: "SNOWY", label: "雪" },
+  { value: "WINDY", label: "風" },
+  { value: "FOGGY", label: "霧" },
+  { value: "THUNDERSTORM", label: "雷雨" },
+];
+
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const text = (formData.get("text") as string) ?? "";
@@ -65,24 +76,31 @@ export default function WorkLogForm() {
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
 
+  const [selectedTags, setSelectedTags] = useState<string[]>(
+    actionData?.tags ?? [],
+  );
+  const [newTagInput, setNewTagInput] = useState("");
+  const [title, setTitle] = useState(actionData?.title ?? "");
+  const [date, setDate] = useState(() => {
+    const now = new Date();
+    return new Date(now.getTime() + 9 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0];
+  });
+
   const [weather, setWeather] = useState("");
   const [temperature, setTemperature] = useState("");
   const [humidity, setHumidity] = useState("");
+  const [windSpeed, setWindSpeed] = useState("");
+  const [precipitation, setPrecipitation] = useState("");
+
   const [loadingWeather, setLoadingWeather] = useState(false);
+  const [posting, setPosting] = useState(false);
 
   const weatherCollection = createListCollection({
-    items: [
-      { value: "SUNNY", label: "晴れ" },
-      { value: "CLOUDY", label: "曇り" },
-      { value: "RAINY", label: "雨" },
-      { value: "SNOWY", label: "雪" },
-      { value: "WINDY", label: "風" },
-      { value: "FOGGY", label: "霧" },
-      { value: "THUNDERSTORM", label: "雷雨" },
-    ],
+    items: WEATHER_OPTIONS,
   });
 
-  // 天気取得
   const handleAutoFillWeather = async () => {
     setLoadingWeather(true);
     try {
@@ -96,18 +114,11 @@ export default function WorkLogForm() {
       setWeather(data.weather);
     } catch (error) {
       console.error(error);
+      alert("天気の取得に失敗しました");
     } finally {
       setLoadingWeather(false);
     }
   };
-
-  const [selectedTags, setSelectedTags] = useState<string[]>(
-    actionData?.tags ?? [],
-  );
-  const [newTagInput, setNewTagInput] = useState("");
-  const [title, setTitle] = useState(actionData?.title ?? "");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  const [posting, setPosting] = useState(false);
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
@@ -130,12 +141,20 @@ export default function WorkLogForm() {
     ) as HTMLTextAreaElement | null;
     const textValue = textarea ? textarea.value : (actionData?.text ?? "");
 
-    if (!textValue.trim()) return alert("内容を入力してください");
-    if (!title.trim()) return alert("表題を入力してください");
-    if (!date) return alert("日付を入力してください");
+    if (!textValue.trim()) {
+      alert("内容を入力してください");
+      return;
+    }
+    if (!title.trim()) {
+      alert("表題を入力してください");
+      return;
+    }
+    if (!date) {
+      alert("日付を選択してください");
+      return;
+    }
 
     setPosting(true);
-
     const url = "/worklogformat/worklogpost/submit";
 
     try {
@@ -143,9 +162,13 @@ export default function WorkLogForm() {
       formData.append("title", title);
       formData.append("workDetails", textValue);
       formData.append("date", date);
-      formData.append("temperature", temperature);
-      formData.append("humidity", humidity);
-      formData.append("weather", weather);
+
+      if (weather) formData.append("weather", weather);
+      if (temperature) formData.append("temperature", temperature);
+      if (humidity) formData.append("humidity", humidity);
+      if (windSpeed) formData.append("windSpeed", windSpeed);
+      if (precipitation) formData.append("precipitation", precipitation);
+
       selectedTags.forEach((tag) => formData.append("tags[]", tag));
 
       const res = await fetch(url, { method: "POST", body: formData });
@@ -182,7 +205,7 @@ export default function WorkLogForm() {
         <Box p={6} shadow="lg" borderWidth="1px" borderRadius="lg" bg="white">
           <RouterForm method="post">
             <VStack gap={4} align="stretch">
-              {/* 日付入力 */}
+              {/* 1. 作業日 */}
               <Box>
                 <Text fontWeight="bold" color="black" mb={2} as="label">
                   作業日{" "}
@@ -201,7 +224,7 @@ export default function WorkLogForm() {
                 />
               </Box>
 
-              {/* 表題 */}
+              {/* 2. 表題 */}
               <Box>
                 <Text fontWeight="bold" color="black" mb={2} as="label">
                   表題{" "}
@@ -220,7 +243,7 @@ export default function WorkLogForm() {
                 />
               </Box>
 
-              {/* 作業内容 */}
+              {/* 3. 作業内容 */}
               <Box>
                 <Text fontWeight="bold" color="black" mb={2} as="label">
                   作業内容{" "}
@@ -240,12 +263,10 @@ export default function WorkLogForm() {
                 />
               </Box>
 
-              {/* タグ hidden */}
               {selectedTags.map((tag) => (
                 <input key={tag} type="hidden" name="tags[]" value={tag} />
               ))}
 
-              {/* キーワード抽出ボタン */}
               <Button
                 type="submit"
                 colorScheme="teal"
@@ -256,7 +277,7 @@ export default function WorkLogForm() {
                 キーワードを抽出
               </Button>
 
-              {/* 抽出キーワード */}
+              {/* 抽出候補表示 */}
               {actionData?.keywords && (
                 <Box
                   bg="gray.50"
@@ -266,33 +287,35 @@ export default function WorkLogForm() {
                   borderColor="gray.200"
                 >
                   <Text fontSize="sm" mb={2} color="gray.600">
-                    抽出候補:
+                    抽出候補（クリックで追加）:
                   </Text>
                   <HStack wrap="wrap" gap={2}>
-                    {actionData.keywords.keywords.map((item, index) => (
-                      <Box
-                        key={index}
-                        p={2}
-                        bg={
-                          selectedTags.includes(item.word)
-                            ? "teal.100"
-                            : "white"
-                        }
-                        borderWidth="1px"
-                        borderRadius="md"
-                        cursor="pointer"
-                        onClick={() => toggleTag(item.word)}
-                      >
-                        <Text fontWeight="bold" color="black" fontSize="sm">
-                          {item.word}
-                        </Text>
-                      </Box>
-                    ))}
+                    {actionData.keywords.keywords.map(
+                      (item: any, index: number) => (
+                        <Box
+                          key={index}
+                          p={2}
+                          bg={
+                            selectedTags.includes(item.word)
+                              ? "teal.100"
+                              : "white"
+                          }
+                          borderWidth="1px"
+                          borderRadius="md"
+                          cursor="pointer"
+                          onClick={() => toggleTag(item.word)}
+                        >
+                          <Text fontWeight="bold" color="black" fontSize="sm">
+                            {item.word}
+                          </Text>
+                        </Box>
+                      ),
+                    )}
                   </HStack>
                 </Box>
               )}
 
-              {/* タグ管理 */}
+              {/* 4. タグ編集 */}
               <Box>
                 <Text fontWeight="bold" color="black" mb={2}>
                   選択中のタグ
@@ -337,80 +360,136 @@ export default function WorkLogForm() {
                 </HStack>
               </Box>
 
+              {/* 5. 天気情報 (画像の通り一番下に配置) */}
               <Box>
-                <Text fontWeight="bold" color="black" mb={2}>
+                <Text fontWeight="bold" color="black" mb={2} as="label">
                   天気情報
                 </Text>
-                <HStack gap={2} wrap="wrap">
-                  <Input
-                    placeholder="気温(℃)"
-                    value={temperature}
-                    onChange={(e) => setTemperature(e.target.value)}
-                    size="sm"
-                    width="100px"
-                  />
-                  ℃
-                  <Input
-                    placeholder="湿度(%)"
-                    value={humidity}
-                    onChange={(e) => setHumidity(e.target.value)}
-                    size="sm"
-                    width="100px"
-                  />
-                  %
-                  {/* <Input
-                    placeholder="天気"
-                    value={weather}
-                    onChange={(e) => setWeather(e.target.value)}
-                    size="sm"
-                    width="120px"
-                  /> */}
+                <HStack gap={4} wrap="wrap" alignItems="center">
+                  <HStack gap={1}>
+                    <Input
+                      placeholder="気温"
+                      value={temperature}
+                      onChange={(e) => setTemperature(e.target.value)}
+                      size="md"
+                      width="80px"
+                      bg="white"
+                      color="black"
+                      borderColor="gray.300"
+                    />
+                    <Text color="black">℃</Text>
+                  </HStack>
+
+                  <HStack gap={1}>
+                    <Input
+                      placeholder="湿度"
+                      value={humidity}
+                      onChange={(e) => setHumidity(e.target.value)}
+                      size="md"
+                      width="80px"
+                      bg="white"
+                      color="black"
+                      borderColor="gray.300"
+                    />
+                    <Text color="black">%</Text>
+                  </HStack>
+
+                  {/* セレクトボックス (Chakra UI v3) */}
                   <Select.Root
                     collection={weatherCollection}
-                    width="120px"
+                    size="md"
+                    width="140px"
                     value={[weather]}
                     onValueChange={(val: any) => {
-                      if (typeof val === "string") {
-                        setWeather(val);
-                      } else if ("value" in val) {
-                        setWeather(val.value);
-                      }
+                      if (typeof val === "string") setWeather(val);
+                      else if (val.value && Array.isArray(val.value))
+                        setWeather(val.value[0]);
+                      else if (val.value) setWeather(val.value);
                     }}
                   >
                     <Select.HiddenSelect />
                     <Select.Control>
-                      <Select.Trigger>
-                        <Select.ValueText placeholder="天気を選択" />
+                      <Select.Trigger bg="white" borderColor="gray.300">
+                        <Select.ValueText
+                          placeholder="天気を選択"
+                          color="black"
+                        />
                       </Select.Trigger>
                       <Select.IndicatorGroup>
-                        <Select.Indicator />
+                        <Select.Indicator color="black" />
                       </Select.IndicatorGroup>
                     </Select.Control>
                     <Portal>
                       <Select.Positioner>
-                        <Select.Content>
+                        {/* メニュー背景白 */}
+                        <Select.Content
+                          bg="white"
+                          color="black"
+                          borderColor="gray.200"
+                          borderWidth="1px"
+                          zIndex={1500}
+                        >
                           {weatherCollection.items.map((item) => (
-                            <Select.Item item={item} key={item.value}>
+                            <Select.Item
+                              item={item}
+                              key={item.value}
+                              _hover={{ bg: "gray.100" }}
+                              _highlighted={{ bg: "gray.100" }}
+                              cursor="pointer"
+                            >
                               {item.label}
-                              <Select.ItemIndicator />
+                              <Select.ItemIndicator color="teal.500" />
                             </Select.Item>
                           ))}
                         </Select.Content>
                       </Select.Positioner>
                     </Portal>
                   </Select.Root>
+
                   <Button
                     size="sm"
-                    colorScheme="yellow"
+                    colorScheme="yellow" // 画像に合わせて黄色系などの目立つ色に
+                    variant="ghost" // 文字だけのリンク風にするならghost、ボタンならsolid
                     loading={loadingWeather}
                     onClick={handleAutoFillWeather}
+                    color="black"
                   >
                     自動取得
                   </Button>
                 </HStack>
+
+                {/* 風速・降水量の追加欄（必要であれば表示、画像にはないので控えめに配置） */}
+                <HStack gap={4} mt={2} wrap="wrap">
+                  <HStack gap={1}>
+                    <Input
+                      placeholder="風速"
+                      value={windSpeed}
+                      onChange={(e) => setWindSpeed(e.target.value)}
+                      size="md"
+                      width="80px"
+                      bg="white"
+                      color="black"
+                      borderColor="gray.300"
+                    />
+                    <Text color="black">m/s</Text>
+                  </HStack>
+                  <HStack gap={1}>
+                    <Input
+                      placeholder="降水量"
+                      value={precipitation}
+                      onChange={(e) => setPrecipitation(e.target.value)}
+                      size="md"
+                      width="80px"
+                      bg="white"
+                      color="black"
+                      borderColor="gray.300"
+                    />
+                    <Text color="black">mm</Text>
+                  </HStack>
+                </HStack>
               </Box>
 
-              {/* 日誌投稿 */}
+              {/* 投稿ボタン */}
               <Button
                 mt={4}
                 type="button"
