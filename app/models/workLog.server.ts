@@ -1,4 +1,4 @@
-import type { WeatherCondition } from "@prisma/client";
+import type { Prisma, WeatherCondition } from "@prisma/client";
 
 import { prisma } from "~/lib/prisma";
 
@@ -81,4 +81,15 @@ export async function getWorkLogById(id: number) {
 
 export async function deleteWorkLogById(id: number) {
   return prisma.workLog.delete({ where: { id } });
+}
+
+export type WorkLogsWithUserAndTags = Prisma.WorkLogGetPayload<{
+  include: { tags: true; user: true };
+}>;
+
+export async function getWorkLogsByFarmId(farmId: number) {
+  return prisma.workLog.findMany({
+    where: { farm: { id: farmId } },
+    include: { tags: true, user: true },
+  });
 }

@@ -28,6 +28,7 @@ export default [
     route("edit-interest-tags", "routes/editInterestTags.tsx"),
     route("explore", "routes/knowhow/explore.tsx"),
     route("knowhow", "routes/knowhow/index.ts"),
+    route("knowhow/create/:farmId", "routes/knowhow/create.tsx"),
     route("knowhow/:id", "routes/knowhow/detail.tsx"),
     route("organization/register", "routes/organization/register.tsx"),
     route("organization", "routes/organization/index.tsx"),
