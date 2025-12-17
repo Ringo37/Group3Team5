@@ -1,4 +1,4 @@
-import { Action, Prisma, Visibility } from "@prisma/client";
+import { Action, Prisma, Visibility, type InterestTag } from "@prisma/client";
 
 import { prisma } from "~/lib/prisma";
 
@@ -9,6 +9,7 @@ interface CreateKnowhowProps {
   farmId: number;
   userId: string;
   visibility: Visibility;
+  tags?: InterestTag[];
 }
 
 export type KnowhowWithCover = Prisma.KnowhowGetPayload<{
@@ -22,8 +23,9 @@ export async function createKnowhow({
   farmId,
   userId,
   visibility,
+  tags,
 }: CreateKnowhowProps) {
-  prisma.knowhow.create({
+  return prisma.knowhow.create({
     data: {
       title,
       summary,
@@ -37,6 +39,11 @@ export async function createKnowhow({
           action: Action.CREATE,
         },
       },
+      tags: tags?.length
+        ? {
+            connect: tags.map((tag) => ({ id: tag.id })),
+          }
+        : undefined,
     },
   });
 }

@@ -18,15 +18,16 @@ export const loader = async () => {
       take: 3,
       include: { user: true, tags: true },
     });
-    return { latestLogs };
+    const farmId = 1;
+    return { latestLogs, farmId };
   } catch (e) {
     console.error(e);
-    return { latestLogs: [] };
+    return { latestLogs: [], farmId: null };
   }
 };
 
 export default function WorkLogIndex() {
-  const { latestLogs } = useLoaderData<typeof loader>();
+  const { latestLogs, farmId } = useLoaderData<typeof loader>();
 
   return (
     <Box
@@ -73,6 +74,22 @@ export default function WorkLogIndex() {
               _hover={{ bg: "teal.50", transform: "scale(1.02)" }}
             >
               すべての日誌を見る →
+            </Button>
+          </Link>
+
+          <Link to={`/knowhow/create/${farmId}`} style={{ width: "100%" }}>
+            <Button
+              variant="outline"
+              size="lg"
+              width="full"
+              bg="white"
+              color="teal.600"
+              borderWidth="1px"
+              borderColor="teal.600"
+              borderRadius="full"
+              _hover={{ bg: "teal.50", transform: "scale(1.02)" }}
+            >
+              ノウハウを生成する →
             </Button>
           </Link>
         </VStack>

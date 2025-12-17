@@ -35,7 +35,6 @@ import { apiClient } from "~/lib/apiClient";
 import { prisma } from "~/lib/prisma";
 import { requireUserId } from "~/services/auth.server";
 
-
 // 天気の選択肢
 const WEATHER_OPTIONS = [
   { value: "SUNNY", label: "晴れ" },

@@ -18,6 +18,7 @@ import {
   type LoaderFunctionArgs,
 } from "react-router";
 
+import { MarkdownContent } from "~/components/markdown";
 import { getKnowhowById } from "~/models/knowhow.server";
 import { requireUserId } from "~/services/auth.server";
 
@@ -54,7 +55,7 @@ export default function KnowhowDetail() {
   }
 
   return (
-    <Container maxW="container.md" py={8}>
+    <Container maxW="80%" py={8}>
       <VStack gap={6} align="stretch">
         {/* パンくずリスト & 戻るボタン */}
         <HStack justify="space-between">
@@ -69,23 +70,21 @@ export default function KnowhowDetail() {
         </HStack>
 
         {/* カバー画像 (存在する場合のみ表示) */}
-        {knowhow.cover && (
-          <Box
+        <Box
+          w="100%"
+          h={{ base: "200px", md: "350px" }}
+          borderRadius="lg"
+          overflow="hidden"
+          boxShadow="md"
+        >
+          <Image
+            src={knowhow.cover?.url ?? "/knowhow.jpg"}
+            alt={knowhow.title}
             w="100%"
-            h={{ base: "200px", md: "350px" }}
-            borderRadius="lg"
-            overflow="hidden"
-            boxShadow="md"
-          >
-            <Image
-              src={knowhow.cover.url}
-              alt={knowhow.title}
-              w="100%"
-              h="100%"
-              objectFit="cover"
-            />
-          </Box>
-        )}
+            h="100%"
+            objectFit="cover"
+          />
+        </Box>
 
         {/* タイトルとメタ情報 */}
         <VStack align="start" gap={3}>
@@ -129,15 +128,9 @@ export default function KnowhowDetail() {
         <Separator />
 
         {/* 本文 (FullText) */}
-        <Box
-          className="markdown-body" // 将来的にMarkdownスタイルを当てる場合用
-          lineHeight="1.8"
-          fontSize="lg"
-          whiteSpace="pre-wrap" // 改行を反映させる
-        >
-          {knowhow.fullText || "本文はありません。"}
+        <Box fontSize="lg">
+          <MarkdownContent content={knowhow.fullText || "本文はありません。"} />
         </Box>
-
         {/* フッターエリア（必要に応じて編集ボタンなどを配置） */}
         <Box pt={10}>{/* 編集ボタンなどを置くスペース */}</Box>
       </VStack>
