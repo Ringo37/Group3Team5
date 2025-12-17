@@ -32,7 +32,7 @@ class KnowHow(BaseModel):
 
 
 class Learner(BaseModel):
-    user_id: str # ← int から str に変更 
+    user_id: str  # ← int から str に変更
     name: str
     interest_tags: List[str]
 
