@@ -11,6 +11,8 @@ import {
   VStack,
   Separator,
   Field,
+  Badge,
+  Flex,
 } from "@chakra-ui/react";
 import {
   Calendar,
@@ -22,6 +24,7 @@ import {
   X,
   Building2,
   Tractor,
+  Tag,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
@@ -34,6 +37,7 @@ import {
   type LoaderFunctionArgs,
 } from "react-router";
 
+import { prisma } from "~/lib/prisma";
 import { getFarmsByUserId } from "~/models/farm.server";
 import { getOrganizationsByUserId } from "~/models/organization.server";
 import { updateUser } from "~/models/user.server";
@@ -43,10 +47,19 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const user = await requireUser(request);
   const organizations = await getOrganizationsByUserId(user.id);
   const farms = await getFarmsByUserId(user.id);
+
+  //ユーザーの興味タグを取得
+  const userWithTags = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { InterestTag: true },
+  });
+  const interestTags = userWithTags?.InterestTag ?? [];
+
   if (!user) {
     return redirect("/login");
   }
-  return { user, organizations, farms };
+  // (#修正) interestTags を返却データに追加
+  return { user, organizations, farms, interestTags };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -117,7 +130,9 @@ const InfoRow = ({
 };
 
 export default function Mypage() {
-  const { user, organizations, farms } = useLoaderData<typeof loader>();
+  // interestTags を受け取る
+  const { user, organizations, farms, interestTags } =
+    useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const [isEditing, setIsEditing] = useState(!!actionData?.errors);
   const [data, setData] = useState({
@@ -341,6 +356,54 @@ export default function Mypage() {
                     </Link>
                   ))}
                 </VStack>
+              )}
+            </VStack>
+          </Box>
+
+          {/* 興味・関心セクション*/}
+          <Box
+            p={6}
+            borderWidth="1px"
+            borderRadius="lg"
+            boxShadow="md"
+            bg="white"
+          >
+            <VStack align="stretch" gap={4}>
+              <HStack justify="space-between">
+                <HStack>
+                  <Icon as={Tag} color="teal.500" boxSize={6} />
+                  <Heading size="md">あなたの興味</Heading>
+                </HStack>
+                {/* routes.tsに基づき /edit-interest-tags へリンク */}
+                <Link to="/edit-interest-tags">
+                  <Button colorScheme="teal" size="sm">
+                    興味を追加
+                  </Button>
+                </Link>
+              </HStack>
+
+              <Separator />
+
+              {interestTags.length === 0 ? (
+                <Text color="gray.500" py={2}>
+                  登録されている興味はありません。
+                </Text>
+              ) : (
+                <Flex gap={2} wrap="wrap">
+                  {interestTags.map((tag) => (
+                    <Badge
+                      key={tag.id}
+                      colorScheme="teal"
+                      variant="subtle"
+                      px={2}
+                      py={1}
+                      borderRadius="full"
+                      fontSize="sm"
+                    >
+                      {tag.tag}
+                    </Badge>
+                  ))}
+                </Flex>
               )}
             </VStack>
           </Box>

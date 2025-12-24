@@ -11,7 +11,8 @@ export async function addInterestTag(id: User["id"], tags: string[]) {
     where: { id },
     data: {
       InterestTag: {
-        connect: tags.map((tag) => ({ tag })),
+        // connect ではなく set を使用することで、既存の関連をリセットして新しいリストに置き換える
+        set: tags.map((tag) => ({ tag })),
       },
     },
   });
@@ -22,7 +23,10 @@ export type UserWithAvatar = Prisma.UserGetPayload<{
 }>;
 
 export async function getUserById(id: User["id"]) {
-  return prisma.user.findUnique({ where: { id }, include: { avatar: true } });
+  return prisma.user.findUnique({
+    where: { id },
+    include: { avatar: true, InterestTag: true },
+  });
 }
 
 export async function getUserByEmail(email: User["email"]) {
