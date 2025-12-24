@@ -9,17 +9,22 @@ import {
 import {
   Form,
   redirect,
+  useLoaderData,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from "react-router";
 
 import { farmKeyword } from "~/data/farmKeyword";
-import { addInterestTag } from "~/models/user.server";
+import { addInterestTag, getUserById } from "~/models/user.server";
 import { requireUser } from "~/services/auth.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  await requireUser(request);
-  return {};
+  const user = await requireUser(request);
+  // #修正: ユーザーが現在持っているタグを取得してクライアントに渡す
+  const userWithTags = await getUserById(user.id);
+  const currentTags = userWithTags?.InterestTag.map((t) => t.tag) || [];
+
+  return { currentTags };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -29,11 +34,14 @@ export async function action({ request }: ActionFunctionArgs) {
   // 選択されたすべての "tags" の値を配列として取得
   const tags = formData.getAll("tags") as string[];
 
+  // addInterestTag内で 'set' を使うようになったため、これでリセットと更新が同時に行われる
   await addInterestTag(user.id, tags);
   return redirect("/mypage");
 }
 
 export default function EditInterestTagsPage() {
+  // #修正: loaderから現在のタグリストを取得
+  const { currentTags } = useLoaderData<typeof loader>();
   return (
     <Box
       maxW="400px"
@@ -57,11 +65,16 @@ export default function EditInterestTagsPage() {
             maxH="300px"
             overflowY="auto"
           >
-            {/* 修正点1: spacing -> gap に変更 */}
+            {/*  spacing -> gap に変更 */}
             <SimpleGrid columns={2} gap={3}>
               {Array.from(farmKeyword).map((tag) => (
-                // 修正点2: v3用のカスタムCheckboxコンポーネントを使用
-                <CustomCheckbox key={tag} value={tag} label={tag} />
+                //  v3用のカスタムCheckboxコンポーネントを使用
+                <CustomCheckbox
+                  key={tag}
+                  value={tag}
+                  label={tag}
+                  defaultChecked={currentTags.includes(tag)}
+                />
               ))}
             </SimpleGrid>
           </Box>
@@ -83,9 +96,22 @@ export default function EditInterestTagsPage() {
 // ------------------------------------------
 // Chakra UI v3 用のチェックボックス部品
 // ------------------------------------------
-function CustomCheckbox({ value, label }: { value: string; label: string }) {
+function CustomCheckbox({
+  value,
+  label,
+  defaultChecked,
+}: {
+  value: string;
+  label: string;
+  defaultChecked: boolean;
+}) {
   return (
-    <Checkbox.Root name="tags" value={value} colorPalette="teal">
+    <Checkbox.Root
+      name="tags"
+      value={value}
+      colorPalette="teal"
+      defaultChecked={defaultChecked}
+    >
       <Checkbox.HiddenInput />
       <Checkbox.Control>
         {/* チェックが入ったときのアイコン（チェックマーク） */}
