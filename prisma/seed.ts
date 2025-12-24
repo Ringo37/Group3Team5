@@ -1,6 +1,8 @@
 import { PrismaClient, Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
+import { knowhowData } from "./dummyData";
+
 const prisma = new PrismaClient();
 
 const email = "test@example.com";
@@ -137,6 +139,7 @@ async function seed() {
   // --- ユーザー作成 ---
   const user = await prisma.user.create({
     data: {
+      id: "test",
       name: "Test",
       email: email,
       password: { create: { hash: hashedPassword } },
@@ -273,6 +276,10 @@ async function seed() {
     data: workLogsData,
   });
 
+  await prisma.knowhow.createMany({
+    data: knowhowData,
+    skipDuplicates: true,
+  });
   console.log("Long & unique work logs created successfully! 🌾");
 }
 
