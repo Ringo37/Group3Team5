@@ -6,6 +6,7 @@ import {
   SimpleGrid,
   Button,
   HStack,
+  Heading,
 } from "@chakra-ui/react";
 import { Search } from "lucide-react";
 import {
@@ -16,6 +17,7 @@ import {
   type LoaderFunctionArgs,
 } from "react-router";
 
+import Footer from "~/components/fotter";
 import { PostCard } from "~/components/postCard";
 import { getKnowHows, getKnowHowsCount } from "~/models/knowhow.server";
 
@@ -43,12 +45,22 @@ export default function Explore() {
 
   return (
     <Flex direction="column" minH="100vh" bg="#fdf8f3">
-      <Box flex="1" width="100%" pb={20}>
+      <Box
+        flex="1"
+        pb={20}
+        mx="auto"
+        maxWidth="7xl"
+        width={{ base: "95%", md: "90%", lg: "65%" }}
+        px={0}
+      >
         <Box maxW="7xl" mx="auto" px={{ base: 6, md: 10 }}>
+          <Heading as="h1" size="2xl" textAlign="center" mt={10}>
+            ノウハウを検索
+          </Heading>
           <Form method="get" action=".">
             <InputGroup
               startElement={<Search size={16} color="gray" />}
-              marginY={5}
+              marginY={10}
             >
               <Input
                 name="search"
@@ -110,6 +122,7 @@ export default function Explore() {
           )}
         </Box>
       </Box>
+      <Footer />
     </Flex>
   );
 }
