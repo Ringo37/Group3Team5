@@ -23,6 +23,8 @@ export const knowhowData = [
     visibility: Visibility.PUBLIC,
     farmId: 1,
     userId: "test",
+    tags: ["トマト", "水管理", "剪定"],
+    fileId: "1",
   },
   {
     title: "きゅうりのうどんこ病対策と整枝",
@@ -44,6 +46,8 @@ export const knowhowData = [
     visibility: Visibility.PUBLIC,
     farmId: 1,
     userId: "test",
+    tags: ["きゅうり", "うどん粉病", "整枝"],
+    fileId: "2",
   },
   {
     title: "コシヒカリの収穫適期の見極め方",
@@ -68,6 +72,8 @@ export const knowhowData = [
     visibility: Visibility.PUBLIC,
     farmId: 1,
     userId: "test",
+    tags: ["米", "コシヒカリ", "収穫"],
+    fileId: "3",
   },
   {
     title: "ナスの更新剪定で秋まで収穫",
@@ -87,6 +93,8 @@ export const knowhowData = [
     visibility: Visibility.PUBLIC,
     farmId: 1,
     userId: "test",
+    tags: ["ナス", "選定", "秋"],
+    fileId: "4",
   },
   {
     title: "イチゴのランナー受けと苗作り",
@@ -107,5 +115,7 @@ export const knowhowData = [
     visibility: Visibility.PUBLIC,
     farmId: 1,
     userId: "test",
+    tags: ["イチゴ", "苗作り", "管理"],
+    fileId: "5",
   },
 ];
