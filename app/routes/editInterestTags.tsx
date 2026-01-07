@@ -66,7 +66,7 @@ export default function EditInterestTagsPage() {
             overflowY="auto"
           >
             {/*  spacing -> gap に変更 */}
-            <SimpleGrid columns={2} gap={3}>
+            <SimpleGrid columns={3} gap={6}>
               {Array.from(farmKeyword).map((tag) => (
                 //  v3用のカスタムCheckboxコンポーネントを使用
                 <CustomCheckbox
