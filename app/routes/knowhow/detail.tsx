@@ -9,6 +9,7 @@ import {
   Badge,
   Button,
   Separator,
+  Spacer,
 } from "@chakra-ui/react";
 import { Calendar } from "lucide-react";
 import {
@@ -101,10 +102,26 @@ export default function KnowhowDetail() {
               </Text>
             </HStack>
           </HStack>
+          <HStack w="100%" gap={4}>
+            <Heading as="h1" size="xl">
+              {knowhow.title}
+            </Heading>
 
-          <Heading as="h1" size="xl">
-            {knowhow.title}
-          </Heading>
+            <Text>{knowhow.farm.name}</Text>
+
+            <Spacer />
+
+            <Button
+              colorScheme="blue"
+              size="sm"
+              onClick={() => {
+                // 例: お問い合わせページへ遷移
+                // navigate(`/farm/${knowhow.farm.id}/contact`);
+              }}
+            >
+              連絡する
+            </Button>
+          </HStack>
         </VStack>
 
         {/* 概要 (Summary) */}
