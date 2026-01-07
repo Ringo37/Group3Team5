@@ -22,7 +22,7 @@ export const PostCard = ({ knowhow }: Props) => {
         transition="all 0.2s"
       >
         <Image
-          src={knowhow.cover?.url || undefined}
+          src={knowhow.cover?.url ?? "/knowhow.jpg"}
           alt="投稿の画像"
           height="200px"
           width="100%"
@@ -40,7 +40,7 @@ export const PostCard = ({ knowhow }: Props) => {
               {formatDate(knowhow.createdAt)}
             </Text>
             <Text fontSize="xs" color="teal.500" fontWeight="medium">
-              タグをここ
+              {knowhow.tags.map((tag) => `#${tag.tag} `)}
             </Text>
           </HStack>
         </Box>

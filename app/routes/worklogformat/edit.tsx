@@ -36,7 +36,6 @@ import { requireUserId } from "~/services/auth.server";
 import { getCurrentPosition } from "~/utils/getPosition.client";
 import { fetchCurrentWeather } from "~/utils/getWeather";
 
-
 // 天気の選択肢
 const WEATHER_OPTIONS = [
   { value: "SUNNY", label: "晴れ" },
