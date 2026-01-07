@@ -8,7 +8,6 @@ import {
   Textarea,
   Button,
   Input,
-  SimpleGrid,
   createListCollection,
   Select,
   Portal,
@@ -34,6 +33,8 @@ import { farmKeyword } from "~/data/farmKeyword";
 import { apiClient } from "~/lib/apiClient";
 import { prisma } from "~/lib/prisma";
 import { requireUserId } from "~/services/auth.server";
+import { getCurrentPosition } from "~/utils/getPosition.client";
+import { fetchCurrentWeather } from "~/utils/getWeather";
 
 // 天気の選択肢
 const WEATHER_OPTIONS = [
@@ -151,7 +152,7 @@ export default function WorkLogEdit() {
   );
   const [newTagInput, setNewTagInput] = useState("");
 
-  // JST日付変換
+  // JST日付変換 (初期値)
   const [date, setDate] = useState(
     new Date(log.date).toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" }),
   );
@@ -166,10 +167,31 @@ export default function WorkLogEdit() {
   const [precipitation, setPrecipitation] = useState(
     log.precipitation?.toString() ?? "",
   );
+  const [loadingWeather, setLoadingWeather] = useState(false);
 
   const weatherCollection = createListCollection({
     items: WEATHER_OPTIONS,
   });
+
+  // 天気自動取得（編集画面でも使えるように worklogpost と同じロジックを実装）
+  const handleAutoFillWeather = async () => {
+    setLoadingWeather(true);
+    try {
+      const pos = await getCurrentPosition();
+      const data = await fetchCurrentWeather(
+        pos.coords.latitude,
+        pos.coords.longitude,
+      );
+      setTemperature(String(data.temperature));
+      setHumidity(String(data.humidity));
+      setWeather(data.weather);
+    } catch (error) {
+      console.error(error);
+      alert("天気の取得に失敗しました");
+    } finally {
+      setLoadingWeather(false);
+    }
+  };
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
@@ -209,155 +231,27 @@ export default function WorkLogEdit() {
         <Box p={6} shadow="lg" borderWidth="1px" borderRadius="lg" bg="white">
           <RouterForm method="post">
             <VStack gap={4} align="stretch">
-              {/* 1. 作業日・天気エリア */}
-              <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
-                <Box>
-                  <Text fontWeight="bold" color="black" mb={2} as="label">
-                    作業日
+              {/* 1. 作業日（一番上） */}
+              <Box>
+                <Text fontWeight="bold" color="black" mb={2} as="label">
+                  作業日{" "}
+                  <Text as="span" color="red.500">
+                    *
                   </Text>
-                  <Input
-                    type="date"
-                    name="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    size="lg"
-                    color="black"
-                    bg="white"
-                    borderColor="gray.300"
-                  />
-                </Box>
-                <Box>
-                  <Text fontWeight="bold" color="black" mb={2} as="label">
-                    天気
-                  </Text>
-                  {/* worklogpostと同じSelect.Root構造 */}
-                  <Select.Root
-                    collection={weatherCollection}
-                    size="lg"
-                    value={[weather]}
-                    onValueChange={(val: any) => {
-                      if (typeof val === "string") setWeather(val);
-                      else if (val.value && Array.isArray(val.value))
-                        setWeather(val.value[0]);
-                      else if (val.value) setWeather(val.value);
-                    }}
-                  >
-                    <Select.HiddenSelect name="weather" />
-                    <Select.Control>
-                      <Select.Trigger bg="white" borderColor="gray.300">
-                        <Select.ValueText
-                          placeholder="選択してください"
-                          color="black"
-                        />
-                      </Select.Trigger>
-                      <Select.IndicatorGroup>
-                        <Select.Indicator color="black" />
-                      </Select.IndicatorGroup>
-                    </Select.Control>
-                    <Portal>
-                      <Select.Positioner>
-                        <Select.Content
-                          bg="white"
-                          color="black"
-                          borderColor="gray.200"
-                          borderWidth="1px"
-                          zIndex={1500}
-                        >
-                          {weatherCollection.items.map((item) => (
-                            <Select.Item
-                              item={item}
-                              key={item.value}
-                              _hover={{ bg: "gray.100" }}
-                              _highlighted={{ bg: "gray.100" }}
-                              cursor="pointer"
-                            >
-                              {item.label}
-                              <Select.ItemIndicator color="teal.500" />
-                            </Select.Item>
-                          ))}
-                        </Select.Content>
-                      </Select.Positioner>
-                    </Portal>
-                  </Select.Root>
-                </Box>
-              </SimpleGrid>
-
-              {/* 2. 環境データ入力エリア */}
-              <Box
-                p={4}
-                bg="gray.50"
-                borderRadius="md"
-                borderWidth="1px"
-                borderColor="gray.200"
-              >
-                <Text fontWeight="bold" color="gray.700" mb={3} fontSize="sm">
-                  環境データ
                 </Text>
-                <SimpleGrid columns={{ base: 2, md: 4 }} gap={4}>
-                  <Box>
-                    <Text fontSize="xs" mb={1} color="gray.600">
-                      気温 (℃)
-                    </Text>
-                    <Input
-                      name="temperature"
-                      type="number"
-                      step="0.1"
-                      value={temperature}
-                      onChange={(e) => setTemperature(e.target.value)}
-                      bg="white"
-                      color="black"
-                      borderColor="gray.300"
-                    />
-                  </Box>
-                  <Box>
-                    <Text fontSize="xs" mb={1} color="gray.600">
-                      湿度 (%)
-                    </Text>
-                    <Input
-                      name="humidity"
-                      type="number"
-                      step="1"
-                      value={humidity}
-                      onChange={(e) => setHumidity(e.target.value)}
-                      bg="white"
-                      color="black"
-                      borderColor="gray.300"
-                    />
-                  </Box>
-                  <Box>
-                    <Text fontSize="xs" mb={1} color="gray.600">
-                      風速 (m/s)
-                    </Text>
-                    <Input
-                      name="windSpeed"
-                      type="number"
-                      step="0.1"
-                      value={windSpeed}
-                      onChange={(e) => setWindSpeed(e.target.value)}
-                      bg="white"
-                      color="black"
-                      borderColor="gray.300"
-                    />
-                  </Box>
-                  <Box>
-                    <Text fontSize="xs" mb={1} color="gray.600">
-                      降水量 (mm)
-                    </Text>
-                    <Input
-                      name="precipitation"
-                      type="number"
-                      step="0.5"
-                      value={precipitation}
-                      onChange={(e) => setPrecipitation(e.target.value)}
-                      bg="white"
-                      color="black"
-                      borderColor="gray.300"
-                    />
-                  </Box>
-                </SimpleGrid>
+                <Input
+                  type="date"
+                  name="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  size="lg"
+                  color="black"
+                  bg="white"
+                  borderColor="gray.300"
+                />
               </Box>
 
-              {/* 3. 表題 */}
+              {/* 2. 表題 */}
               <Box>
                 <Text fontWeight="bold" color="black" mb={2} as="label">
                   表題{" "}
@@ -376,7 +270,7 @@ export default function WorkLogEdit() {
                 />
               </Box>
 
-              {/* 4. 作業内容 */}
+              {/* 3. 作業内容 */}
               <Box>
                 <Text fontWeight="bold" color="black" mb={2} as="label">
                   作業内容{" "}
@@ -387,9 +281,11 @@ export default function WorkLogEdit() {
                 <Textarea
                   name="text"
                   defaultValue={actionData?.text ?? log.workDetails}
-                  bg="white"
+                  placeholder="作業内容を入力..."
+                  required
+                  size="lg"
+                  rows={10}
                   color="black"
-                  rows={8}
                   borderColor="gray.300"
                 />
               </Box>
@@ -406,7 +302,7 @@ export default function WorkLogEdit() {
                 value="extract"
                 colorScheme="teal"
                 variant="outline"
-                size="sm"
+                width="full"
                 loading={isSubmitting}
               >
                 キーワードを再抽出
@@ -450,7 +346,7 @@ export default function WorkLogEdit() {
                 </Box>
               )}
 
-              {/* タグ編集エリア */}
+              {/* 4. タグ編集エリア */}
               <Box>
                 <Text fontWeight="bold" color="black" mb={2}>
                   選択中のタグ
@@ -492,6 +388,139 @@ export default function WorkLogEdit() {
                   >
                     ＋
                   </Button>
+                </HStack>
+              </Box>
+
+              {/* 5. 天気情報 (一番下、worklogpostと同じレイアウト) */}
+              <Box>
+                <Text fontWeight="bold" color="black" mb={2} as="label">
+                  天気情報
+                </Text>
+                <HStack gap={4} wrap="wrap" alignItems="center">
+                  <HStack gap={1}>
+                    <Input
+                      name="temperature"
+                      placeholder="気温"
+                      value={temperature}
+                      onChange={(e) => setTemperature(e.target.value)}
+                      size="md"
+                      width="80px"
+                      bg="white"
+                      color="black"
+                      borderColor="gray.300"
+                    />
+                    <Text color="black">℃</Text>
+                  </HStack>
+
+                  <HStack gap={1}>
+                    <Input
+                      name="humidity"
+                      placeholder="湿度"
+                      value={humidity}
+                      onChange={(e) => setHumidity(e.target.value)}
+                      size="md"
+                      width="80px"
+                      bg="white"
+                      color="black"
+                      borderColor="gray.300"
+                    />
+                    <Text color="black">%</Text>
+                  </HStack>
+
+                  {/* セレクトボックス */}
+                  <Select.Root
+                    collection={weatherCollection}
+                    size="md"
+                    width="140px"
+                    value={[weather]}
+                    onValueChange={(val: any) => {
+                      if (typeof val === "string") setWeather(val);
+                      else if (val.value && Array.isArray(val.value))
+                        setWeather(val.value[0]);
+                      else if (val.value) setWeather(val.value);
+                    }}
+                  >
+                    <Select.HiddenSelect name="weather" />
+                    <Select.Control>
+                      <Select.Trigger bg="white" borderColor="gray.300">
+                        <Select.ValueText
+                          placeholder="天気を選択"
+                          color="black"
+                        />
+                      </Select.Trigger>
+                      <Select.IndicatorGroup>
+                        <Select.Indicator color="black" />
+                      </Select.IndicatorGroup>
+                    </Select.Control>
+                    <Portal>
+                      <Select.Positioner>
+                        {/* メニューの背景を白く */}
+                        <Select.Content
+                          bg="white"
+                          color="black"
+                          borderColor="gray.200"
+                          borderWidth="1px"
+                          zIndex={1500}
+                        >
+                          {weatherCollection.items.map((item) => (
+                            <Select.Item
+                              item={item}
+                              key={item.value}
+                              _hover={{ bg: "gray.100" }}
+                              _highlighted={{ bg: "gray.100" }}
+                              cursor="pointer"
+                            >
+                              {item.label}
+                              <Select.ItemIndicator color="teal.500" />
+                            </Select.Item>
+                          ))}
+                        </Select.Content>
+                      </Select.Positioner>
+                    </Portal>
+                  </Select.Root>
+
+                  <Button
+                    size="sm"
+                    colorScheme="yellow"
+                    variant="ghost"
+                    loading={loadingWeather}
+                    onClick={handleAutoFillWeather}
+                    color="black"
+                  >
+                    自動取得
+                  </Button>
+                </HStack>
+
+                {/* 風速・降水量 */}
+                <HStack gap={4} mt={2} wrap="wrap">
+                  <HStack gap={1}>
+                    <Input
+                      name="windSpeed"
+                      placeholder="風速"
+                      value={windSpeed}
+                      onChange={(e) => setWindSpeed(e.target.value)}
+                      size="md"
+                      width="80px"
+                      bg="white"
+                      color="black"
+                      borderColor="gray.300"
+                    />
+                    <Text color="black">m/s</Text>
+                  </HStack>
+                  <HStack gap={1}>
+                    <Input
+                      name="precipitation"
+                      placeholder="降水量"
+                      value={precipitation}
+                      onChange={(e) => setPrecipitation(e.target.value)}
+                      size="md"
+                      width="80px"
+                      bg="white"
+                      color="black"
+                      borderColor="gray.300"
+                    />
+                    <Text color="black">mm</Text>
+                  </HStack>
                 </HStack>
               </Box>
 

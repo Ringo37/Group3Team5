@@ -148,68 +148,66 @@ async function seed() {
   });
 
   // --- 作物作成 ---
-  const riceCrop = await prisma.crop.upsert({
-    where: { name: "米" },
-    update: {},
-    create: { name: "米" },
+  await prisma.crop.create({
+    data: { name: "米", id: 1 },
   });
   await prisma.crop.createMany({
     data: [
       // --- 穀物類 ---
-      { name: "小麦" },
-      { name: "大麦" },
-      { name: "大豆" },
-      { name: "そば" },
-      { name: "トウモロコシ" },
+      { id: 2, name: "小麦" },
+      { id: 3, name: "大麦" },
+      { id: 4, name: "大豆" },
+      { id: 5, name: "そば" },
+      { id: 6, name: "トウモロコシ" },
 
       // --- 果菜類（実を食べる野菜） ---
-      { name: "トマト" },
-      { name: "ナス" },
-      { name: "キュウリ" },
-      { name: "ピーマン" },
-      { name: "カボチャ" },
-      { name: "オクラ" },
-      { name: "枝豆" },
-      { name: "ゴーヤ" },
+      { id: 7, name: "トマト" },
+      { id: 8, name: "ナス" },
+      { id: 9, name: "キュウリ" },
+      { id: 10, name: "ピーマン" },
+      { id: 11, name: "カボチャ" },
+      { id: 12, name: "オクラ" },
+      { id: 13, name: "枝豆" },
+      { id: 14, name: "ゴーヤ" },
 
       // --- 根菜類（根を食べる野菜） ---
-      { name: "大根" },
-      { name: "人参" },
-      { name: "ジャガイモ" },
-      { name: "サツマイモ" },
-      { name: "玉ねぎ" },
-      { name: "ごぼう" },
-      { name: "レンコン" },
-      { name: "里芋" },
-      { name: "カブ" },
+      { id: 15, name: "大根" },
+      { id: 16, name: "人参" },
+      { id: 17, name: "ジャガイモ" },
+      { id: 18, name: "サツマイモ" },
+      { id: 19, name: "玉ねぎ" },
+      { id: 20, name: "ごぼう" },
+      { id: 21, name: "レンコン" },
+      { id: 22, name: "里芋" },
+      { id: 23, name: "カブ" },
 
       // --- 葉茎菜類（葉や茎を食べる野菜） ---
-      { name: "キャベツ" },
-      { name: "レタス" },
-      { name: "白菜" },
-      { name: "ほうれん草" },
-      { name: "小松菜" },
-      { name: "ネギ" },
-      { name: "ブロッコリー" },
-      { name: "アスパラガス" },
-      { name: "ニラ" },
-      { name: "セロリ" },
+      { id: 24, name: "キャベツ" },
+      { id: 25, name: "レタス" },
+      { id: 26, name: "白菜" },
+      { id: 27, name: "ほうれん草" },
+      { id: 28, name: "小松菜" },
+      { id: 29, name: "ネギ" },
+      { id: 30, name: "ブロッコリー" },
+      { id: 31, name: "アスパラガス" },
+      { id: 32, name: "ニラ" },
+      { id: 33, name: "セロリ" },
 
       // --- 果物類 ---
-      { name: "イチゴ" },
-      { name: "スイカ" },
-      { name: "メロン" },
-      { name: "ミカン" },
-      { name: "リンゴ" },
-      { name: "ブドウ" },
-      { name: "梨" },
-      { name: "桃" },
-      { name: "柿" },
-      { name: "レモン" },
+      { id: 34, name: "イチゴ" },
+      { id: 35, name: "スイカ" },
+      { id: 36, name: "メロン" },
+      { id: 37, name: "ミカン" },
+      { id: 38, name: "リンゴ" },
+      { id: 39, name: "ブドウ" },
+      { id: 40, name: "梨" },
+      { id: 41, name: "桃" },
+      { id: 42, name: "柿" },
+      { id: 43, name: "レモン" },
 
       // --- その他 ---
-      { name: "キノコ" },
-      { name: "茶" },
+      { id: 44, name: "キノコ" },
+      { id: 45, name: "茶" },
     ],
     skipDuplicates: true,
   });
@@ -231,17 +229,113 @@ async function seed() {
       areaHa: 10,
       region: "Tokyo",
       seasonalCalendar: "4~10月",
-      cropId: riceCrop.id,
+      cropId: 1, // 米
       users: { connect: { id: user.id } },
       organizationId: org1.id,
     },
   });
 
-  // --- ダミーファイル ---
-  await prisma.file.create({
+  await prisma.farm.create({
     data: {
-      url: "https://www.jaiwate.or.jp/wp-content/themes/ja_iwate_group/img/dummy-pic3.jpg",
-      fileName: "dummy-pic3.jpg",
+      id: 2,
+      name: "赤羽農場",
+      areaHa: 10,
+      region: "Tokyo",
+      seasonalCalendar: "4~10月",
+      cropId: 7, // トマト
+      users: { connect: { id: user.id } },
+      organizationId: org1.id,
+    },
+  });
+
+  await prisma.farm.create({
+    data: {
+      id: 3,
+      name: "多摩川ファーム",
+      areaHa: 5,
+      region: "Tokyo",
+      seasonalCalendar: "3~9月",
+      cropId: 25, // レタス
+      users: { connect: { id: user.id } },
+      organizationId: org1.id,
+    },
+  });
+
+  await prisma.farm.create({
+    data: {
+      id: 4,
+      name: "湘南グリーン農園",
+      areaHa: 8,
+      region: "Kanagawa",
+      seasonalCalendar: "3~11月",
+      cropId: 24, // キャベツ
+      users: { connect: { id: user.id } },
+      organizationId: org1.id,
+    },
+  });
+
+  await prisma.farm.create({
+    data: {
+      id: 5,
+      name: "信州高原ファーム",
+      areaHa: 12,
+      region: "Nagano",
+      seasonalCalendar: "5~10月",
+      cropId: 38, // リンゴ
+      users: { connect: { id: user.id } },
+      organizationId: org1.id,
+    },
+  });
+
+  await prisma.farm.create({
+    data: {
+      id: 6,
+      name: "越後ライスフィールド",
+      areaHa: 20,
+      region: "Niigata",
+      seasonalCalendar: "5~9月",
+      cropId: 1, // 米
+      users: { connect: { id: user.id } },
+      organizationId: org1.id,
+    },
+  });
+
+  await prisma.farm.create({
+    data: {
+      id: 7,
+      name: "近江水田センター",
+      areaHa: 15,
+      region: "Shiga",
+      seasonalCalendar: "4~10月",
+      cropId: 4, // 大豆
+      users: { connect: { id: user.id } },
+      organizationId: org1.id,
+    },
+  });
+
+  await prisma.farm.create({
+    data: {
+      id: 8,
+      name: "庄内アグリパーク",
+      areaHa: 18,
+      region: "Yamagata",
+      seasonalCalendar: "5~9月",
+      cropId: 40, // 梨
+      users: { connect: { id: user.id } },
+      organizationId: org1.id,
+    },
+  });
+
+  await prisma.farm.create({
+    data: {
+      id: 9,
+      name: "筑後平野ファーム",
+      areaHa: 22,
+      region: "Fukuoka",
+      seasonalCalendar: "4~10月",
+      cropId: 45, // 茶
+      users: { connect: { id: user.id } },
+      organizationId: org1.id,
     },
   });
 
@@ -276,10 +370,56 @@ async function seed() {
     data: workLogsData,
   });
 
-  await prisma.knowhow.createMany({
-    data: knowhowData,
-    skipDuplicates: true,
+  await prisma.file.createMany({
+    data: [
+      {
+        id: "1",
+        url: "https://www.kagome.co.jp/seisen/tomato/about/img/sp/nature_img.jpg",
+        fileName: "",
+      },
+      {
+        id: "2",
+        url: "https://ymmfarm.com/wp-content/uploads/2024/01/cucumber-harvest.jpg",
+        fileName: "",
+      },
+      {
+        id: "3",
+        url: "https://www.kubota.co.jp/kubotatanbo/role/img/2-1-1_mechanism_kv.jpg",
+        fileName: "",
+      },
+      {
+        id: "4",
+        url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcdORvvHk7dx6ROip48r1BQ2YyInK4Ld1-kQ&s",
+        fileName: "",
+      },
+      {
+        id: "5",
+        url: "https://wakasa-takahama.jp/wp-content/uploads/2020/02/umibeno-ichigobatake_01.jpg",
+        fileName: "",
+      },
+    ],
   });
+
+  for (const knowhow of knowhowData) {
+    await prisma.knowhow.create({
+      data: {
+        title: knowhow.title,
+        summary: knowhow.summary,
+        fullText: knowhow.fullText,
+        visibility: knowhow.visibility,
+        farmId: knowhow.farmId,
+        userId: knowhow.userId,
+
+        tags: {
+          connectOrCreate: knowhow.tags.map((tag) => ({
+            where: { tag },
+            create: { tag },
+          })),
+        },
+        fileId: knowhow.fileId,
+      },
+    });
+  }
   console.log("Long & unique work logs created successfully! 🌾");
 }
 
