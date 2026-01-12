@@ -1,15 +1,4 @@
-import {
-  Box,
-  Container,
-  Text,
-  Button,
-  Heading,
-  VStack,
-  HStack,
-  Flex,
-} from "@chakra-ui/react";
-import { Form, Link } from "react-router";
-
+import { Box, Container, Text, Heading, VStack, Flex } from "@chakra-ui/react";
 export default function Footer() {
   return (
     <Box
@@ -30,7 +19,7 @@ export default function Footer() {
               農家と施設をつなぎ、新しい農業のかたちをつくる。
             </Text>
           </VStack>
-
+          {/*
           <Text fontSize="sm" color="gray.300" mb={4}>
             ※ 開発用リンク（後で削除予定）
           </Text>
@@ -98,6 +87,7 @@ export default function Footer() {
               </Link>
             </HStack>
           </Flex>
+          */}
 
           <Box pt={8} borderTopWidth={1} borderColor="whiteAlpha.300" w="full">
             <Flex

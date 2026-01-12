@@ -9,7 +9,8 @@ import {
   Icon,
   Image,
 } from "@chakra-ui/react";
-import { Home, SquarePen, Search, Users, BookOpen } from "lucide-react";
+// Usersアイコンを削除しました
+import { Home, SquarePen, Search, BookOpen } from "lucide-react";
 import { Form, Link, useLocation } from "react-router";
 
 import type { UserWithAvatar } from "~/models/user.server";
@@ -154,33 +155,14 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
               </HStack>
             )}
           </HStack>
-
-          {/* スマホ用検索バー 
-          <Box
-            flex={1}
-            minWidth={{ base: "200px", md: "200px" }}
-            width={{ base: "full", md: "auto" }}
-            mx={0}
-            display={{ base: "block", md: "none" }}
-          >
-            <InputGroup startElement={<Search size={16} color="gray" />}>
-              <Input
-                type="search"
-                placeholder="キーワード..."
-                borderRadius="full"
-                bg="gray.50"
-                _dark={{ bg: "gray.700", borderColor: "gray.600" }}
-                borderColor="gray.300"
-                pl={10}
-              />
-            </InputGroup>
-          </Box>
-          */}
         </Flex>
 
         {/* === 下段: ナビゲーション === */}
         <Flex as="nav" align="center" justify="center" width="100%">
-          <HStack gap={{ base: 4, md: 8, lg: 10 }}>
+          {/* 項目が減ったため、gapを少し広げてバランス調整しました。
+             base: 6, md: 12, lg: 16 くらいにするとゆったり配置されます 
+          */}
+          <HStack gap={{ base: 6, md: 12, lg: 16 }}>
             <Link to="/">
               <HStack as="span" gap={2} align="center" {...getLinkStyle("/")}>
                 <Icon as={Home} boxSize={6} />
@@ -209,18 +191,6 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
               >
                 <Icon as={Search} boxSize={6} />
                 <span style={{ whiteSpace: "nowrap" }}>ノウハウを探す</span>
-              </HStack>
-            </Link>
-
-            <Link to="/community">
-              <HStack
-                as="span"
-                gap={2}
-                align="center"
-                {...getLinkStyle("/community")}
-              >
-                <Icon as={Users} boxSize={6} />
-                <span style={{ whiteSpace: "nowrap" }}>コミュニティ</span>
               </HStack>
             </Link>
 
