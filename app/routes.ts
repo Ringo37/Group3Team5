@@ -19,6 +19,7 @@ export default [
       "worklogformat/worklogpost/submit",
       "routes/worklogformat/worklogpost.submit.ts",
     ),
+    route("guide", "routes/guide.tsx"),
     route("worklogformat/list", "routes/worklogformat/list.tsx"),
     route("worklogformat/complete", "routes/worklogformat/complete.tsx"),
     route("worklogformat/:id", "routes/worklogformat/detail.tsx"),
