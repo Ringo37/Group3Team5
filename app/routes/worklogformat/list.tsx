@@ -173,17 +173,7 @@ export default function WorkLogList() {
               新着順
             </Button>
           </Link>
-          <Link to="/worklogformat/list?sort=recommend">
-            <Button
-              as="div"
-              size="sm"
-              variant={isRecommended ? "solid" : "outline"}
-              colorScheme="orange"
-              cursor="pointer"
-            >
-              おすすめ順
-            </Button>
-          </Link>
+          <Link to="/worklogformat/list?sort=recommend"></Link>
         </HStack>
       </Flex>
 

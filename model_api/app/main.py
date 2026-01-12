@@ -36,23 +36,44 @@ def extract_keywords_api(request: TextRequest):
 
 @app.post("/recommend", response_model=RecommendResponse)
 def recommend_api(request: RecommendRequest):
+
+    # #修正: タグの空白除去(strip)を行い、正規化したタグリストを作成する
+    # これにより " tomato " と "tomato" が一致するようにします
+    knowhow_tags_list = [[t.strip() for t in k.tags] for k in request.knowhows]
+    learner_tags_list = [
+        [t.strip() for t in x.interest_tags] for x in request.learners
+    ]
+
     # タグ集合作成（リスト前提で抜き出し）
-    all_tags = list(
-        set(
-            chain.from_iterable(
-                [m.tags for m in request.knowhows]
-                + [n.interest_tags for n in request.learners]
-            )
-        )
+    # #修正: 正規化したタグで全タグリストを作成し、sorted()で順序を固定する
+    all_tags = sorted(
+        list(set(chain.from_iterable(knowhow_tags_list + learner_tags_list)))
     )
+
     learner = next(
         (le for le in request.learners if le.name == request.user_name), None
     )
     if learner is None:
         return {"recommendations": []}
+
+    # #修正: recommend関数に渡すデータも、正規化（strip）済みのタグに置き換えて渡す
+    # (recommend.py側でもstripしていますが、all_tagsとの整合性を確実にするため)
+
+    # knowhowsデータの作成（タグを差し替え）
+    knowhows_dicts = []
+    for i, k in enumerate(request.knowhows):
+        d = k.dict()
+        d["tags"] = knowhow_tags_list[i]  # 正規化済みタグリストを使用
+        knowhows_dicts.append(d)
+
+    # learnerデータの作成（タグを差し替え）
+    learner_dict = learner.dict()
+    # 該当ユーザーのタグも正規化済みのものを使用
+    learner_dict["interest_tags"] = [t.strip() for t in learner.interest_tags]
+
     result = recommend(
-        [k.dict() for k in request.knowhows],
-        learner.dict(),
+        knowhows_dicts,
+        learner_dict,
         all_tags,
         top_n=request.top_n,
     )
