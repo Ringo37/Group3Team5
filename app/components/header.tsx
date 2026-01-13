@@ -9,7 +9,6 @@ import {
   Icon,
   Image,
 } from "@chakra-ui/react";
-// Usersアイコンを削除しました
 import { Home, SquarePen, Search, BookOpen } from "lucide-react";
 import { Form, Link, useLocation } from "react-router";
 
@@ -26,11 +25,11 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
       borderColor: isActive ? activeColor : "transparent",
       color: isActive ? activeColor : "#009245",
 
-      paddingBottom: "14px",
+      paddingBottom: { base: "6px", md: "14px" },
       marginBottom: "-1.5px",
 
       fontWeight: "medium" as const,
-      fontSize: "md",
+      fontSize: { base: "10px", sm: "sm", md: "md" },
       transition: "all 0.2s",
       _hover: { color: "#266836" },
     };
@@ -54,42 +53,55 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
     >
       <Flex
         direction="column"
-        width={{ base: "95%", md: "100%" }}
+        width="100%"
         maxWidth="5xl"
         mx="auto"
+        px={{ base: 4, md: 6, lg: 8 }}
       >
         <Flex
           align="center"
+          direction={{ base: user ? "row" : "column", md: "row" }}
           justify="space-between"
-          paddingTop={4}
+          paddingTop={{ base: 2, md: 4 }}
           paddingBottom={2}
           width="100%"
-          gap={4}
-          px={{ base: 3, md: 0 }}
+          gap={{ base: 0, md: 4 }}
         >
-          <HStack ml={{ base: 0, md: 0, lg: 0 }}>
+          <HStack
+            width={user ? "auto" : { base: "100%", md: "auto" }}
+            justify={user ? "flex-start" : { base: "center", md: "flex-start" }}
+          >
             <Link to="/">
-              <HStack gap={3} align="center">
+              <HStack gap={{ base: 2, md: 3 }} align="center">
                 <Image
                   src="/favicon.svg"
                   alt="農ハウ ロゴ"
-                  height="75px"
+                  height={{ base: "50px", md: "75px" }}
                   width="auto"
                   objectFit="contain"
                 />
-                <Box fontSize="3xl" fontWeight="bold" color="#009570">
+                <Box
+                  fontSize={{ base: "xl", md: "3xl" }}
+                  fontWeight="bold"
+                  color="#009570"
+                >
                   農ハウマッチング
                 </Box>
               </HStack>
             </Link>
           </HStack>
 
-          <HStack align="center" mr={user ? { base: 50, md: 50 } : 0}>
+          <HStack
+            align="center"
+            width={user ? "auto" : { base: "100%", md: "auto" }}
+            justify={user ? "flex-end" : "center"}
+            mr={user ? { base: 0, md: 50 } : 0}
+          >
             {user ? (
               <Menu.Root>
                 <Menu.Trigger _focus={{ borderRadius: "full" }}>
                   <AvatarGroup>
-                    <Avatar.Root size="sm">
+                    <Avatar.Root size={{ base: "sm", md: "md" }}>
                       <Avatar.Image
                         src={user.avatar?.url || undefined}
                         alt={user.name || "User Avatar"}
@@ -131,9 +143,16 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
                 </Menu.Positioner>
               </Menu.Root>
             ) : (
-              <HStack>
-                <Link to="/login">
+              <HStack
+                gap={4}
+                width={{ base: "100%", md: "auto" }}
+                justify="center"
+              >
+                <Link to="/login" style={{ width: "fit-content" }}>
                   <Button
+                    fontSize={{ base: "xs", md: "sm" }}
+                    size={{ base: "xs", md: "md" }}
+                    width={{ base: "140px", md: "120px" }}
                     bg="#FF7B00"
                     color="white"
                     borderRadius="full"
@@ -144,6 +163,9 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
                 </Link>
                 <Link to="/join">
                   <Button
+                    fontSize={{ base: "xs", md: "sm" }}
+                    size={{ base: "xs", md: "md" }}
+                    width={{ base: "140px", md: "120px" }}
                     bg="#009245"
                     color="white"
                     borderRadius="full"
@@ -156,16 +178,22 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
             )}
           </HStack>
         </Flex>
-
-        {/* === 下段: ナビゲーション === */}
-        <Flex as="nav" align="center" justify="center" width="100%">
-          {/* 項目が減ったため、gapを少し広げてバランス調整しました。
-             base: 6, md: 12, lg: 16 くらいにするとゆったり配置されます 
-          */}
-          <HStack gap={{ base: 6, md: 12, lg: 16 }}>
+        <Flex
+          as="nav"
+          align="center"
+          justify="center"
+          width="100%"
+          px={{ base: 1, md: 0 }}
+        >
+          <HStack gap={{ base: 2, sm: 6, md: 12, lg: 16 }}>
             <Link to="/">
-              <HStack as="span" gap={2} align="center" {...getLinkStyle("/")}>
-                <Icon as={Home} boxSize={6} />
+              <HStack
+                as="span"
+                gap={{ base: 1, md: 2 }}
+                align="center"
+                {...getLinkStyle("/")}
+              >
+                <Icon as={Home} boxSize={{ base: 4, md: 6 }} />
                 <span style={{ whiteSpace: "nowrap" }}>ホーム</span>
               </HStack>
             </Link>
@@ -173,11 +201,11 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
             <Link to="/worklogformat/worklogpost">
               <HStack
                 as="span"
-                gap={2}
+                gap={{ base: 1, md: 2 }}
                 align="center"
                 {...getLinkStyle("/worklogformat/worklogpost")}
               >
-                <Icon as={SquarePen} boxSize={6} />
+                <Icon as={SquarePen} boxSize={{ base: 4, md: 6 }} />
                 <span style={{ whiteSpace: "nowrap" }}>日誌を作成する</span>
               </HStack>
             </Link>
@@ -185,11 +213,11 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
             <Link to="/explore">
               <HStack
                 as="span"
-                gap={2}
+                gap={{ base: 1, md: 2 }}
                 align="center"
                 {...getLinkStyle("/explore")}
               >
-                <Icon as={Search} boxSize={6} />
+                <Icon as={Search} boxSize={{ base: 4, md: 6 }} />
                 <span style={{ whiteSpace: "nowrap" }}>ノウハウを探す</span>
               </HStack>
             </Link>
@@ -197,11 +225,11 @@ export default function Header({ user }: { user: UserWithAvatar | null }) {
             <Link to="/guide">
               <HStack
                 as="span"
-                gap={2}
+                gap={{ base: 1, md: 2 }}
                 align="center"
                 {...getLinkStyle("/guide")}
               >
-                <Icon as={BookOpen} boxSize={6} />
+                <Icon as={BookOpen} boxSize={{ base: 4, md: 6 }} />
                 <span style={{ whiteSpace: "nowrap" }}>ご利用ガイド</span>
               </HStack>
             </Link>
